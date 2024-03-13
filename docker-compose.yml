@@ -1,0 +1,44 @@
+version: '3.4'
+
+services:
+  miniecommerceapp.webapi:
+    image: registry.digitalocean.com/aspnetwithredis/miniecommerceappwebapi
+    build:
+      context: .
+      dockerfile: MiniECommerceApp.WebApi/Dockerfile
+    ports:
+      - 8080:8080
+      - 8081:8081
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql:latest
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: MiniECommerceAppDb
+      MYSQL_USER: sysadmin
+      MYSQL_PASSWORD: 45867-Sas
+      MYSQL_ROOT_PASSWORD: 45867-Sa  
+    ports:
+      - 3306:3306
+  rabbitmq:
+    image: rabbitmq:latest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"  
+      - "15672:15672" 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: 45867-Sa
+    ports:
+      - 8082:80
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
+  rabbitmq_data:

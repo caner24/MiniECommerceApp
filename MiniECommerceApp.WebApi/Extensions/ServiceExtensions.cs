@@ -1,4 +1,8 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using MiniECommerceApp.Data.Concrete;
+using MiniECommerceApp.Entity;
 
 namespace MiniECommerceApp.WebApi.Extensions
 {
@@ -6,8 +10,8 @@ namespace MiniECommerceApp.WebApi.Extensions
     {
         public static void SwaggerConfiguration(this IServiceCollection services)
         {
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(opt =>
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen(opt =>
             {
                 opt.SwaggerDoc("v1", new OpenApiInfo
                 {
@@ -21,6 +25,23 @@ namespace MiniECommerceApp.WebApi.Extensions
                     }
                 });
             });
+        }
+        public static void IdentityConfiguration(this IServiceCollection services, IConfiguration configuration)
+        {
+            var connectionString = configuration.GetConnectionString("defaultConnection");
+            ServerVersion serverVersion = ServerVersion.AutoDetect(connectionString);
+            services.AddDbContext<MiniECommerceContext>(options => options.UseMySql(connectionString, serverVersion));
+            services.AddIdentityApiEndpoints<User>(options =>
+            {
+                options.SignIn.RequireConfirmedEmail = true;
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequireDigit = false;
+                options.Password.RequireUppercase = false;
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
+                options.Lockout.MaxFailedAccessAttempts = 3;
+            }).AddUserManager<UserManager<User>>().AddRoles<IdentityRole>().AddRoleManager<RoleManager<IdentityRole>>().AddApiEndpoints().AddDefaultTokenProviders().AddEntityFrameworkStores<MiniECommerceContext>();
+            services.AddAuthorizationBuilder();
         }
     }
 }

@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniECommerceApp.Applicatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniECommerceApp.Core", "MiniECommerceApp.Core\MiniECommerceApp.Core.csproj", "{6A527029-A46B-4F9F-9C0A-9CC59FFBC043}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{367844BE-E5FE-4FCC-B1AC-7805544D980E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{6A527029-A46B-4F9F-9C0A-9CC59FFBC043}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A527029-A46B-4F9F-9C0A-9CC59FFBC043}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A527029-A46B-4F9F-9C0A-9CC59FFBC043}.Release|Any CPU.Build.0 = Release|Any CPU
+		{367844BE-E5FE-4FCC-B1AC-7805544D980E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{367844BE-E5FE-4FCC-B1AC-7805544D980E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{367844BE-E5FE-4FCC-B1AC-7805544D980E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{367844BE-E5FE-4FCC-B1AC-7805544D980E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
