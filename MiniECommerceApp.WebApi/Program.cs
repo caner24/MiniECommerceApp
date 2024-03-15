@@ -6,7 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.IdentityConfiguration(builder.Configuration);
 builder.Services.SwaggerConfiguration();
-
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
@@ -16,6 +15,8 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
     });
 }
+
+app.Services.MigrateDb();
 app.UseHttpsRedirection();
 app.MapGroup("/Identity").MapIdentityApi<User>();
 app.UseAuthentication();
