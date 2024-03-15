@@ -18,7 +18,13 @@ if (app.Environment.IsDevelopment())
 
 app.Services.MigrateDb();
 app.UseHttpsRedirection();
-app.MapGroup("/Identity").MapIdentityApi<User>();
+
+app.MapGroup("/api/identity").MapIdentityApi<User>();
+
+app.MapGroup("/api/product").MapProductApi();
+
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.Run();
