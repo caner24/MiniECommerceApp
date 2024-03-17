@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MiniECommerceApp.Core.DataAccess;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MiniECommerceApp.Entity
 {
-    public class Adress
+    public class Adress:IEntity
     {
         public int Id { get; set; }
         public User UserId { get; set; }

@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MiniECommerceApp.Data.Concrete;
 
 #nullable disable
 
-namespace MiniECommerceApp.Data.Migrations
+namespace MiniECommerceApp.WebApi.Migrations
 {
     [DbContext(typeof(MiniECommerceContext))]
-    [Migration("20240313130150_mig_2_some_models_added")]
-    partial class mig_2_some_models_added
+    partial class MiniECommerceContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,21 +21,6 @@ namespace MiniECommerceApp.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
-
-            modelBuilder.Entity("BasketProduct", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ShoppingListsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductId", "ShoppingListsId");
-
-                    b.HasIndex("ShoppingListsId");
-
-                    b.ToTable("BasketProduct");
-                });
 
             modelBuilder.Entity("InvoiceProduct", b =>
                 {
@@ -189,23 +171,14 @@ namespace MiniECommerceApp.Data.Migrations
 
             modelBuilder.Entity("MiniECommerceApp.Entity.Basket", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Products")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasKey("UserId");
 
                     b.ToTable("Basket");
                 });
@@ -279,21 +252,6 @@ namespace MiniECommerceApp.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Product");
-                });
-
-            modelBuilder.Entity("MiniECommerceApp.Entity.ProductBasket", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BasketId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductId", "BasketId");
-
-                    b.HasIndex("BasketId");
-
-                    b.ToTable("ProductBasket");
                 });
 
             modelBuilder.Entity("MiniECommerceApp.Entity.ProductDetail", b =>
@@ -392,21 +350,6 @@ namespace MiniECommerceApp.Data.Migrations
                     b.HasIndex("ProductPhotosId");
 
                     b.ToTable("PhotosProduct");
-                });
-
-            modelBuilder.Entity("BasketProduct", b =>
-                {
-                    b.HasOne("MiniECommerceApp.Entity.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MiniECommerceApp.Entity.Basket", null)
-                        .WithMany()
-                        .HasForeignKey("ShoppingListsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("InvoiceProduct", b =>
@@ -525,25 +468,6 @@ namespace MiniECommerceApp.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("ProductDetail");
-                });
-
-            modelBuilder.Entity("MiniECommerceApp.Entity.ProductBasket", b =>
-                {
-                    b.HasOne("MiniECommerceApp.Entity.Basket", "Basket")
-                        .WithMany()
-                        .HasForeignKey("BasketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MiniECommerceApp.Entity.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Basket");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("PhotosProduct", b =>

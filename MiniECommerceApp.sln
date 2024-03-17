@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniECommerceApp.WebApi", "MiniECommerceApp.WebApi\MiniECommerceApp.WebApi.csproj", "{11BF9047-A9E8-4D4F-82CC-7874182FB451}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniECommerceApp.WebApi", "MiniECommerceApp.WebApi\MiniECommerceApp.WebApi.csproj", "{11BF9047-A9E8-4D4F-82CC-7874182FB451}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniECommerceApp.Data", "MiniECommerceApp.Data\MiniECommerceApp.Data.csproj", "{84521703-5A87-4D74-BE6D-47DEB032F7A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniECommerceApp.Data", "MiniECommerceApp.Data\MiniECommerceApp.Data.csproj", "{84521703-5A87-4D74-BE6D-47DEB032F7A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniECommerceApp.Entity", "MiniECommerceApp.Entity\MiniECommerceApp.Entity.csproj", "{D3AA7399-0CD3-4C52-A332-B25815DF0337}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniECommerceApp.Entity", "MiniECommerceApp.Entity\MiniECommerceApp.Entity.csproj", "{D3AA7399-0CD3-4C52-A332-B25815DF0337}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniECommerceApp.Application", "MiniECommerceApp.Application\MiniECommerceApp.Application.csproj", "{AE59F3CB-8AB7-4619-A0C7-A00C793471DA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniECommerceApp.Core", "MiniECommerceApp.Core\MiniECommerceApp.Core.csproj", "{6A527029-A46B-4F9F-9C0A-9CC59FFBC043}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniECommerceApp.Core", "MiniECommerceApp.Core\MiniECommerceApp.Core.csproj", "{6A527029-A46B-4F9F-9C0A-9CC59FFBC043}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{367844BE-E5FE-4FCC-B1AC-7805544D980E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniECommerceApp.Business", "..\MiniECommerceApp.Business\MiniECommerceApp.Business.csproj", "{8D2F0DA7-4DD7-4E4A-803E-1057AE929EC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +33,6 @@ Global
 		{D3AA7399-0CD3-4C52-A332-B25815DF0337}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3AA7399-0CD3-4C52-A332-B25815DF0337}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3AA7399-0CD3-4C52-A332-B25815DF0337}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AE59F3CB-8AB7-4619-A0C7-A00C793471DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AE59F3CB-8AB7-4619-A0C7-A00C793471DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AE59F3CB-8AB7-4619-A0C7-A00C793471DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AE59F3CB-8AB7-4619-A0C7-A00C793471DA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6A527029-A46B-4F9F-9C0A-9CC59FFBC043}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6A527029-A46B-4F9F-9C0A-9CC59FFBC043}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A527029-A46B-4F9F-9C0A-9CC59FFBC043}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{367844BE-E5FE-4FCC-B1AC-7805544D980E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{367844BE-E5FE-4FCC-B1AC-7805544D980E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{367844BE-E5FE-4FCC-B1AC-7805544D980E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D2F0DA7-4DD7-4E4A-803E-1057AE929EC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D2F0DA7-4DD7-4E4A-803E-1057AE929EC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D2F0DA7-4DD7-4E4A-803E-1057AE929EC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D2F0DA7-4DD7-4E4A-803E-1057AE929EC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

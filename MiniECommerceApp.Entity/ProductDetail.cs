@@ -1,4 +1,5 @@
-﻿using MiniECommerceApp.Entity.Helpers;
+﻿using MiniECommerceApp.Core.DataAccess;
+using MiniECommerceApp.Entity.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MiniECommerceApp.Entity
 {
-    public class ProductDetail
+    public class ProductDetail : IEntity
     {
         public int Amount { get; set; }
         public Size Size { get; set; }

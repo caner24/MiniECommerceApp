@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using MiniECommerceApp.Business.Abstract;
+using MiniECommerceApp.Business.Concrete;
+using MiniECommerceApp.Data.Abstract;
 using MiniECommerceApp.Data.Concrete;
 using MiniECommerceApp.Entity;
+using MiniECommerceApp.Entity.Helpers;
 
 namespace MiniECommerceApp.WebApi.Extensions
 {
@@ -26,11 +30,34 @@ namespace MiniECommerceApp.WebApi.Extensions
                 });
             });
         }
+
+        public static void ServiceLifetimeSetup(this IServiceCollection services)
+        {
+            services.AddScoped<IProductDal, ProductDal>();
+            services.AddScoped<IProductService, ProductManager>();
+
+            services.AddScoped<ISortHelper<Product>, SortHelper<Product>>();
+            services.AddScoped<IDataShaper<Product>, DataShaper<Product>>();
+
+        }
+        public static void ConfigureCors(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder =>
+                    builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .WithExposedHeaders("X-Pagination")
+                );
+            });
+        }
+
         public static void IdentityConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("defaultConnection");
             ServerVersion serverVersion = ServerVersion.AutoDetect(connectionString);
-            services.AddDbContext<MiniECommerceContext>(options => options.UseMySql(connectionString, serverVersion));
+            services.AddDbContext<MiniECommerceContext>(options => options.UseMySql(connectionString, serverVersion, b => b.MigrationsAssembly("MiniECommerceApp.WebApi")));
             services.AddIdentityApiEndpoints<User>(options =>
             {
                 options.SignIn.RequireConfirmedEmail = true;

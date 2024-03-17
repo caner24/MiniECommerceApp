@@ -11,6 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
@@ -26,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\MiniECommerceApp.Business\MiniECommerceApp.Business.csproj" />
     <ProjectReference Include="..\MiniECommerceApp.Data\MiniECommerceApp.Data.csproj" />
     <ProjectReference Include="..\MiniECommerceApp.Entity\MiniECommerceApp.Entity.csproj" />
   </ItemGroup>

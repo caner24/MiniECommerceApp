@@ -6,4 +6,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Product\Handlers\QuerieHandlers\" />
+    <Folder Include="Product\Queries\Response\" />
+    <Folder Include="Product\Queries\Request\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MiniECommerceApp.Entity\MiniECommerceApp.Entity.csproj" />
+  </ItemGroup>
+
 </Project>
