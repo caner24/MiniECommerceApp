@@ -11,6 +11,6 @@ namespace MiniECommerceApp.Entity
     {
         public string UserId { get; set; }
         public User User { get; set; }
-        public HashSet<Product> Products { get; set; }
+        public List<Product> Products { get; set; }
     }
 }

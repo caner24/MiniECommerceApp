@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MiniECommerceApp.Business\MiniECommerceApp.Business.csproj" />
+    <ProjectReference Include="..\MiniECommerceApp.Application\MiniECommerceApp.Application.csproj" />
     <ProjectReference Include="..\MiniECommerceApp.Data\MiniECommerceApp.Data.csproj" />
     <ProjectReference Include="..\MiniECommerceApp.Entity\MiniECommerceApp.Entity.csproj" />
   </ItemGroup>

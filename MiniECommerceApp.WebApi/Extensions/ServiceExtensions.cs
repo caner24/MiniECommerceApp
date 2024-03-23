@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using MiniECommerceApp.Business.Abstract;
-using MiniECommerceApp.Business.Concrete;
 using MiniECommerceApp.Data.Abstract;
 using MiniECommerceApp.Data.Concrete;
 using MiniECommerceApp.Entity;
@@ -34,7 +32,6 @@ namespace MiniECommerceApp.WebApi.Extensions
         public static void ServiceLifetimeSetup(this IServiceCollection services)
         {
             services.AddScoped<IProductDal, ProductDal>();
-            services.AddScoped<IProductService, ProductManager>();
 
             services.AddScoped<ISortHelper<Product>, SortHelper<Product>>();
             services.AddScoped<IDataShaper<Product>, DataShaper<Product>>();
@@ -60,7 +57,7 @@ namespace MiniECommerceApp.WebApi.Extensions
             services.AddDbContext<MiniECommerceContext>(options => options.UseMySql(connectionString, serverVersion, b => b.MigrationsAssembly("MiniECommerceApp.WebApi")));
             services.AddIdentityApiEndpoints<User>(options =>
             {
-                options.SignIn.RequireConfirmedEmail = true;
+                options.SignIn.RequireConfirmedEmail = false;
                 options.User.RequireUniqueEmail = true;
                 options.Password.RequireDigit = false;
                 options.Password.RequireUppercase = false;

@@ -21,11 +21,11 @@ namespace MiniECommerceApp.Data.Concrete.Configuration
             builder.Property(x => x.Products)
           .HasConversion(
               v => JsonConvert.SerializeObject(v),
-              v => JsonConvert.DeserializeObject<HashSet<Product>>(v),
-              new ValueComparer<HashSet<Product>>(
+              v => JsonConvert.DeserializeObject<List<Product>>(v),
+              new ValueComparer<List<Product>>(
                   (c1, c2) => c1.SequenceEqual(c2),
                   c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                  c => new HashSet<Product>(c))
+                  c => new List<Product>(c))
           );
         }
     }

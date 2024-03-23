@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using MiniECommerceApp.Entity.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,9 @@ namespace MiniECommerceApp.Entity.DTOs
 {
     public record AddProductDto
     {
-        public required string ProductName { get; init; }
-        public required double ProductPrice { get; init; }
-        public ProductDetail ProductDetail { get; init; }
-        public HashSet<Invoice> Invoices { get; init; }
-        public HashSet<Photos> ProductPhotos { get; init; }
+        public string ProductName { get; init; }
+        public double ProductPrice { get; init; }
+        public int Amount { get; init; }
+        public Size Size { get; init; }
     }
 }

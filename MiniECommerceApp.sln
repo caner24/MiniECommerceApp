@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniECommerceApp.Entity", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniECommerceApp.Core", "MiniECommerceApp.Core\MiniECommerceApp.Core.csproj", "{6A527029-A46B-4F9F-9C0A-9CC59FFBC043}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{367844BE-E5FE-4FCC-B1AC-7805544D980E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniECommerceApp.Application", "MiniECommerceApp.Application\MiniECommerceApp.Application.csproj", "{8A42B8A3-6492-43B1-B1E2-86726C0C5470}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniECommerceApp.Business", "..\MiniECommerceApp.Business\MiniECommerceApp.Business.csproj", "{8D2F0DA7-4DD7-4E4A-803E-1057AE929EC0}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{AAEB1CCF-03C6-49E1-BE3B-0664B0734B09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,14 +37,14 @@ Global
 		{6A527029-A46B-4F9F-9C0A-9CC59FFBC043}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A527029-A46B-4F9F-9C0A-9CC59FFBC043}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A527029-A46B-4F9F-9C0A-9CC59FFBC043}.Release|Any CPU.Build.0 = Release|Any CPU
-		{367844BE-E5FE-4FCC-B1AC-7805544D980E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{367844BE-E5FE-4FCC-B1AC-7805544D980E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{367844BE-E5FE-4FCC-B1AC-7805544D980E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{367844BE-E5FE-4FCC-B1AC-7805544D980E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8D2F0DA7-4DD7-4E4A-803E-1057AE929EC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D2F0DA7-4DD7-4E4A-803E-1057AE929EC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8D2F0DA7-4DD7-4E4A-803E-1057AE929EC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D2F0DA7-4DD7-4E4A-803E-1057AE929EC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A42B8A3-6492-43B1-B1E2-86726C0C5470}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A42B8A3-6492-43B1-B1E2-86726C0C5470}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A42B8A3-6492-43B1-B1E2-86726C0C5470}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A42B8A3-6492-43B1-B1E2-86726C0C5470}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAEB1CCF-03C6-49E1-BE3B-0664B0734B09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAEB1CCF-03C6-49E1-BE3B-0664B0734B09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAEB1CCF-03C6-49E1-BE3B-0664B0734B09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAEB1CCF-03C6-49E1-BE3B-0664B0734B09}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

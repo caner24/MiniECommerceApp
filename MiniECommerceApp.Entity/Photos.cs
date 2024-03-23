@@ -11,12 +11,12 @@ namespace MiniECommerceApp.Entity
     {
         public Photos()
         {
-            Product = new HashSet<Product>();
+            Product = new List<Product>();
         }
 
         public int Id { get; set; }
-        public required string PhotosUrl { get; set; }
-        public HashSet<Product> Product { get; set; }
+        public string PhotosUrl { get; set; }
+        public List<Product> Product { get; set; }
 
     }
 }

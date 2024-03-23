@@ -24,7 +24,6 @@ namespace MiniECommerceApp.WebApi.MapGroups
             await FindUser(services, userName);
             return Results.Ok();
         }
-
         private static async Task FindUser(IServiceProvider services, string userName)
         {
             var userManager = services.GetRequiredService<UserManager<User>>();

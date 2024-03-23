@@ -1,52 +1,44 @@
-﻿using AutoMapper;
+﻿using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using MiniECommerceApp.Business.Abstract;
-using MiniECommerceApp.Entity;
-using MiniECommerceApp.Entity.DTOs;
-using MiniECommerceApp.Entity.Parameters;
+using MiniECommerceApp.Application.MiniECommerce.Commands.Request;
+using MiniECommerceApp.Application.MiniECommerce.Queries.Request;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 
 namespace MiniECommerceApp.WebApi.MapGroups
 {
     public static class ProductApiEndpointRouteBuilderExtensions
     {
-        public static void MapProductApi(this IEndpointRouteBuilder endpoints)
-        {
-            endpoints.MapGet("/getAllProducts", GetAll);
-            endpoints.MapGet("/getProductsWithId/{id}", GetProductsWithId);
-            endpoints.MapPost("/addProduct", AddProduct);
-        }
-        private static IResult GetAll(HttpContext context, IServiceProvider services, [AsParameters] ProductParameters parameters)
-        {
-            var productService = services.GetRequiredService<IProductService>();
-            var products = productService.GetAll(parameters);
 
+        public static void MapProductApi(this IEndpointRouteBuilder endpointRouteBuilder)
+        {
+            endpointRouteBuilder.MapGet("/getAllProduct", GetAllProduct);
+            endpointRouteBuilder.MapPost("/addProduct", AddProduct);
+        }
+        private static async Task<IResult> GetAllProduct(IMediator mediator, [AsParameters] GetAllProductQueryRequest getAllProductQueryRequest)
+        {
+            var response = await mediator.Send(getAllProductQueryRequest);
             var metadata = new
             {
-                products.TotalCount,
-                products.PageSize,
-                products.CurrentPage,
-                products.TotalPages,
-                products.HasNext,
-                products.HasPrevious
+                response.TotalCount,
+                response.PageSize,
+                response.CurrentPage,
+                response.TotalPages,
+                response.HasNext,
+                response.HasPrevious
             };
-            context.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
-            return Results.Ok(products);
+            //Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Results.Ok(metadata);
         }
-        private static IResult GetProductsWithId([FromRoute] int id)
+        private static IResult GetProductById()
         {
-            return Results.Ok(id);
-        }
-        private static async Task<IResult> AddProduct(IMapper mapper, IServiceProvider services, [FromBody] AddProductDto addProductDto)
-        {
-            var productService = services.GetRequiredService<IProductService>();
-            var mapperService = services.GetRequiredService<IMapper>();
-
-            var product = mapperService.Map<Product>(addProductDto);
-            var returnedProduct = await productService.Add(product);
-
             return Results.Ok();
+        }
+        private static async Task<IResult> AddProduct(IMediator mediator, AddProductCommandRequest addProductCommandRequest)
+        {
+            var addedProduct = await mediator.Send(addProductCommandRequest);
+            return Results.Ok(addedProduct);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace MiniECommerceApp.WebApi.Mapping.AutoMapper
     {
         public MappingProfile()
         {
-            CreateMap<AddProductDto, Product>().ReverseMap();
+            CreateMap<AddProductDto, Product>();
 
         }
     }

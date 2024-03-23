@@ -4,7 +4,7 @@
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
     <DockerPublishLocally>False</DockerPublishLocally>
-    <ProjectGuid>367844be-e5fe-4fcc-b1ac-7805544d980e</ProjectGuid>
+    <ProjectGuid>aaeb1ccf-03c6-49e1-be3b-0664b0734b09</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
     <DockerServiceName>miniecommerceapp.webapi</DockerServiceName>

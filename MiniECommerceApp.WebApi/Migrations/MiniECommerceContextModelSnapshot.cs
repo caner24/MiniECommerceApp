@@ -240,7 +240,10 @@ namespace MiniECommerceApp.WebApi.Migrations
             modelBuilder.Entity("MiniECommerceApp.Entity.Product", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ProductName")
                         .IsRequired()
@@ -257,10 +260,7 @@ namespace MiniECommerceApp.WebApi.Migrations
             modelBuilder.Entity("MiniECommerceApp.Entity.ProductDetail", b =>
                 {
                     b.Property<int>("ProductId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ProductId"));
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
@@ -459,15 +459,15 @@ namespace MiniECommerceApp.WebApi.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MiniECommerceApp.Entity.Product", b =>
+            modelBuilder.Entity("MiniECommerceApp.Entity.ProductDetail", b =>
                 {
-                    b.HasOne("MiniECommerceApp.Entity.ProductDetail", "ProductDetail")
-                        .WithOne("Product")
-                        .HasForeignKey("MiniECommerceApp.Entity.Product", "Id")
+                    b.HasOne("MiniECommerceApp.Entity.Product", "Product")
+                        .WithOne("ProductDetail")
+                        .HasForeignKey("MiniECommerceApp.Entity.ProductDetail", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ProductDetail");
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("PhotosProduct", b =>
@@ -485,9 +485,9 @@ namespace MiniECommerceApp.WebApi.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MiniECommerceApp.Entity.ProductDetail", b =>
+            modelBuilder.Entity("MiniECommerceApp.Entity.Product", b =>
                 {
-                    b.Navigation("Product")
+                    b.Navigation("ProductDetail")
                         .IsRequired();
                 });
 

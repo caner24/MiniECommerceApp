@@ -14,7 +14,7 @@ namespace MiniECommerceApp.Data.Concrete.Configuration
         void IEntityTypeConfiguration<ProductDetail>.Configure(EntityTypeBuilder<ProductDetail> builder)
         {
             builder.HasKey(x => x.ProductId);
-            builder.HasOne(x => x.Product).WithOne(x => x.ProductDetail).HasForeignKey<Product>(x => x.Id);
+            builder.HasOne(x => x.Product).WithOne(x => x.ProductDetail).HasForeignKey<ProductDetail>(x => x.ProductId);
         }
     }
 }

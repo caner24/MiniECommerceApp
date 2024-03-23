@@ -11,14 +11,14 @@ namespace MiniECommerceApp.Entity
     {
         public Product()
         {
-            Invoices = new HashSet<Invoice>();
-            ProductPhotos = new HashSet<Photos>();
+            Invoices = new List<Invoice>();
+            ProductPhotos = new List<Photos>();
         }
         public int Id { get; set; }
         public  string ProductName { get; set; }
         public  double ProductPrice { get; set; }
         public ProductDetail ProductDetail { get; set; }
-        public HashSet<Invoice> Invoices { get; set; }
-        public HashSet<Photos> ProductPhotos { get; set; }
+        public List<Invoice> Invoices { get; set; }
+        public List<Photos> ProductPhotos { get; set; }
     }
 }

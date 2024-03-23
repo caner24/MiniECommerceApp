@@ -7,16 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Product\Handlers\QuerieHandlers\" />
-    <Folder Include="Product\Queries\Response\" />
-    <Folder Include="Product\Queries\Request\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="MediatR" Version="12.2.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MiniECommerceApp.Data\MiniECommerceApp.Data.csproj" />
     <ProjectReference Include="..\MiniECommerceApp.Entity\MiniECommerceApp.Entity.csproj" />
   </ItemGroup>
 
