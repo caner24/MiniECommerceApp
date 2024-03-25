@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MiniECommerceApp.Application.MiniECommerce.Queries.Request
 {
-    public class GetAllProductQueryRequest : ProductParameters, IRequest<PagedList<ShapedEntity>>
+    public class GetAllProductQueryRequest : ProductParameters, IRequest<PagedList<MiniECommerceApp.Entity.Models.Entity>>
     {
 
     }

@@ -8,22 +8,23 @@ using System.Threading.Tasks;
 using System.Xml.Schema;
 using System.Xml;
 using System.Xml.Serialization;
+using MiniECommerceApp.Core.DataAccess;
 
 namespace MiniECommerceApp.Entity.Models
 {
-    public class Entity : DynamicObject, IXmlSerializable, IDictionary<string, object>
+    public class Entity : DynamicObject, IXmlSerializable, IDictionary<string, object>, IEntity
     {
-        private readonly string root = "EntityWithLinks";
-        private readonly IDictionary<string, object> expando = null;
+        private readonly string _root = "Entity";
+        private readonly IDictionary<string, object> _expando = null;
 
         public Entity()
         {
-            expando = new ExpandoObject();
+            _expando = new ExpandoObject();
         }
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            if (expando.TryGetValue(binder.Name, out object value))
+            if (_expando.TryGetValue(binder.Name, out object value))
             {
                 result = value;
                 return true;
@@ -34,7 +35,7 @@ namespace MiniECommerceApp.Entity.Models
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
-            expando[binder.Name] = value;
+            _expando[binder.Name] = value;
 
             return true;
         }
@@ -46,9 +47,9 @@ namespace MiniECommerceApp.Entity.Models
 
         public void ReadXml(XmlReader reader)
         {
-            reader.ReadStartElement(root);
+            reader.ReadStartElement(_root);
 
-            while (!reader.Name.Equals(root))
+            while (!reader.Name.Equals(_root))
             {
                 string typeContent;
                 Type underlyingType;
@@ -58,122 +59,106 @@ namespace MiniECommerceApp.Entity.Models
                 typeContent = reader.ReadContentAsString();
                 underlyingType = Type.GetType(typeContent);
                 reader.MoveToContent();
-                expando[name] = reader.ReadElementContentAs(underlyingType, null);
+                _expando[name] = reader.ReadElementContentAs(underlyingType, null);
             }
         }
 
         public void WriteXml(XmlWriter writer)
         {
-            foreach (var key in expando.Keys)
+            foreach (var key in _expando.Keys)
             {
-                var value = expando[key];
-                WriteXmlElement(key, value, writer);
+                var value = _expando[key];
+                WriteLinksToXml(key, value, writer);
             }
         }
 
-        private void WriteXmlElement(string key, object value, XmlWriter writer)
+        private void WriteLinksToXml(string key, object value, XmlWriter writer)
         {
             writer.WriteStartElement(key);
-
-            if (value.GetType() == typeof(List<Link>))
-            {
-                foreach (var val in value as List<Link>)
-                {
-                    writer.WriteStartElement(nameof(Link));
-                    WriteXmlElement(nameof(val.Href), val.Href, writer);
-                    WriteXmlElement(nameof(val.Method), val.Method, writer);
-                    WriteXmlElement(nameof(val.Rel), val.Rel, writer);
-                    writer.WriteEndElement();
-                }
-            }
-            else
-            {
-                writer.WriteString(value.ToString());
-            }
-
+            writer.WriteString(value.ToString());
             writer.WriteEndElement();
         }
 
         public void Add(string key, object value)
         {
-            expando.Add(key, value);
+            _expando.Add(key, value);
         }
 
         public bool ContainsKey(string key)
         {
-            return expando.ContainsKey(key);
+            return _expando.ContainsKey(key);
         }
 
         public ICollection<string> Keys
         {
-            get { return expando.Keys; }
+            get { return _expando.Keys; }
         }
 
         public bool Remove(string key)
         {
-            return expando.Remove(key);
+            return _expando.Remove(key);
         }
 
         public bool TryGetValue(string key, out object value)
         {
-            return expando.TryGetValue(key, out value);
+            return _expando.TryGetValue(key, out value);
         }
 
         public ICollection<object> Values
         {
-            get { return expando.Values; }
+            get { return _expando.Values; }
         }
 
         public object this[string key]
         {
             get
             {
-                return expando[key];
+                return _expando[key];
             }
             set
             {
-                expando[key] = value;
+                _expando[key] = value;
             }
         }
 
         public void Add(KeyValuePair<string, object> item)
         {
-            expando.Add(item);
+            _expando.Add(item);
         }
 
         public void Clear()
         {
-            expando.Clear();
+            _expando.Clear();
         }
 
         public bool Contains(KeyValuePair<string, object> item)
         {
-            return expando.Contains(item);
+            return _expando.Contains(item);
         }
 
         public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
         {
-            expando.CopyTo(array, arrayIndex);
+            _expando.CopyTo(array, arrayIndex);
         }
 
         public int Count
         {
-            get { return expando.Count; }
+            get { return _expando.Count; }
         }
 
         public bool IsReadOnly
         {
-            get { return expando.IsReadOnly; }
+            get { return _expando.IsReadOnly; }
         }
 
         public bool Remove(KeyValuePair<string, object> item)
         {
-            return expando.Remove(item);
+            return _expando.Remove(item);
         }
 
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
         {
-            return expando.GetEnumerator();
+            return _expando.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -181,4 +166,5 @@ namespace MiniECommerceApp.Entity.Models
             return GetEnumerator();
         }
     }
+
 }

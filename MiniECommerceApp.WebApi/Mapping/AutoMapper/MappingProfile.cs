@@ -9,6 +9,10 @@ namespace MiniECommerceApp.WebApi.Mapping.AutoMapper
         public MappingProfile()
         {
             CreateMap<AddProductDto, Product>();
+            CreateMap<UpdateProductDto, Product>();
+
+            CreateMap<AddCategoryDto, Category>();
+            CreateMap<UpdateCategoryDto, Category>();
 
         }
     }

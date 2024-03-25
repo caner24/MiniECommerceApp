@@ -22,6 +22,21 @@ namespace MiniECommerceApp.WebApi.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("CategoryProduct", b =>
+                {
+                    b.Property<int>("CategoriesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoriesId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("CategoryProduct");
+                });
+
             modelBuilder.Entity("InvoiceProduct", b =>
                 {
                     b.Property<int>("InvoicesId")
@@ -181,6 +196,23 @@ namespace MiniECommerceApp.WebApi.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Basket");
+                });
+
+            modelBuilder.Entity("MiniECommerceApp.Entity.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("MiniECommerceApp.Entity.Favorites", b =>
@@ -350,6 +382,21 @@ namespace MiniECommerceApp.WebApi.Migrations
                     b.HasIndex("ProductPhotosId");
 
                     b.ToTable("PhotosProduct");
+                });
+
+            modelBuilder.Entity("CategoryProduct", b =>
+                {
+                    b.HasOne("MiniECommerceApp.Entity.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MiniECommerceApp.Entity.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("InvoiceProduct", b =>

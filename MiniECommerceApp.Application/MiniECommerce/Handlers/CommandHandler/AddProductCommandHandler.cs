@@ -26,8 +26,11 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
 
             var product = _mapper.Map<Product>(request);
             var addedProduct = await _productDal.AddAsync(product);
-
-            return new AddProductCommandResponse { IsAdded = true, Product = addedProduct };
+            if (addedProduct is not null)
+            {
+                return new AddProductCommandResponse { IsAdded = true, Product = addedProduct };
+            }
+            return new AddProductCommandResponse { IsAdded = false };
         }
     }
 }

@@ -13,11 +13,13 @@ namespace MiniECommerceApp.Entity
         {
             Invoices = new List<Invoice>();
             ProductPhotos = new List<Photos>();
+            Categories = new List<Category>();
         }
         public int Id { get; set; }
-        public  string ProductName { get; set; }
-        public  double ProductPrice { get; set; }
+        public string ProductName { get; set; }
+        public double ProductPrice { get; set; }
         public ProductDetail ProductDetail { get; set; }
+        public List<Category> Categories { get; set; }
         public List<Invoice> Invoices { get; set; }
         public List<Photos> ProductPhotos { get; set; }
     }

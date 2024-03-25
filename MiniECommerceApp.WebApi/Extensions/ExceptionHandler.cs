@@ -12,6 +12,7 @@ namespace MiniECommerceApp.WebApi.Extensions
                 var statusCodes = exception switch
                 {
                     UserNotFoundExcepiton => StatusCodes.Status404NotFound,
+                    ProductNotFoundException => StatusCodes.Status404NotFound,
                     _ => StatusCodes.Status500InternalServerError
                 };
                 var jsonMessage = new

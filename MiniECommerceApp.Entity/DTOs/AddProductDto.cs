@@ -14,5 +14,6 @@ namespace MiniECommerceApp.Entity.DTOs
         public double ProductPrice { get; init; }
         public int Amount { get; init; }
         public Size Size { get; init; }
+        public List<Category> Categories { get; init; }
     }
 }

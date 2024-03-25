@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using MiniECommerceApp.Application.MiniECommerce.Queries.Request;
 using MiniECommerceApp.Application.MiniECommerce.Queries.Response;
 using MiniECommerceApp.Data.Abstract;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace MiniECommerceApp.Application.MiniECommerce.Handlers.QueryHandler
 {
-    public class GetAllProductQueryHandler : IRequestHandler<GetAllProductQueryRequest, PagedList<ShapedEntity>>
+    public class GetAllProductQueryHandler : IRequestHandler<GetAllProductQueryRequest, PagedList<MiniECommerceApp.Entity.Models.Entity>>
     {
         private readonly IProductDal _productDal;
         private readonly ISortHelper<Product> _sortHelper;
@@ -25,7 +26,7 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.QueryHandler
             _sortHelper = sortHelper;
             _dataShaper = dataShaper;
         }
-        public async Task<PagedList<ShapedEntity>> Handle(GetAllProductQueryRequest request, CancellationToken cancellationToken)
+        public async Task<PagedList<MiniECommerceApp.Entity.Models.Entity>> Handle(GetAllProductQueryRequest request, CancellationToken cancellationToken)
         {
 
             var products = _productDal.GetAll();
@@ -33,7 +34,7 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.QueryHandler
             var sortedOwners = _sortHelper.ApplySort(products, request.OrderBy);
             var shapedOwners = _dataShaper.ShapeData(sortedOwners, request.Fields);
 
-            return PagedList<ShapedEntity>.ToPagedList(shapedOwners,
+            return PagedList<MiniECommerceApp.Entity.Models.Entity>.ToPagedList(shapedOwners,
             request.PageNumber,
             request.PageSize);
 

@@ -32,6 +32,7 @@ namespace MiniECommerceApp.WebApi.Extensions
         public static void ServiceLifetimeSetup(this IServiceCollection services)
         {
             services.AddScoped<IProductDal, ProductDal>();
+            services.AddScoped<ICategoryDal, CategoryDal>();
 
             services.AddScoped<ISortHelper<Product>, SortHelper<Product>>();
             services.AddScoped<IDataShaper<Product>, DataShaper<Product>>();

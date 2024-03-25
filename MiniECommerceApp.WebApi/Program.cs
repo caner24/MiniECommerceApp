@@ -1,8 +1,10 @@
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using MiniECommerceApp.Entity;
 using MiniECommerceApp.WebApi.Extensions;
 using MiniECommerceApp.WebApi.MapGroups;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +12,11 @@ builder.Services.IdentityConfiguration(builder.Configuration);
 builder.Services.SwaggerConfiguration();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 builder.Services.ServiceLifetimeSetup();
-builder.Services.AddProblemDetails(); 
+builder.Services.AddProblemDetails();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Load("MiniECommerceApp.Application")));
 builder.Services.ConfigureCors();
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddAntiforgery();
 
 
@@ -28,6 +31,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+           Path.Combine(builder.Environment.ContentRootPath, "Media")),
+    RequestPath = "/Files"
+});
 #region Apis
 app.UseAntiforgery();
 app.MapGroup("/api/identity").MapIdentityApi<User>();
