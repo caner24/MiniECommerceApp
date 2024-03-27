@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MiniECommerceApp.Application.MiniECommerce.Queries.Request;
 using MiniECommerceApp.Entity;
 using MiniECommerceApp.Entity.DTOs;
 using MiniECommerceApp.Entity.Exceptions;
@@ -12,26 +14,17 @@ namespace MiniECommerceApp.WebApi.MapGroups
         public static void MapBasketApi(this IEndpointRouteBuilder endpoints)
         {
             endpoints.MapPost("/addProductToBasket", AddProductToBasket);
-            endpoints.MapGet("/getUserBasket/{UserName}", GetUserBasket);
+            endpoints.MapGet("/getUserBasket/{id}", GetUserBasket);
         }
-        private static async Task<IResult> AddProductToBasket(IServiceProvider services, [FromBody] AddProductToBasketDto addProductToBasketDto)
+        private static async Task<IResult> AddProductToBasket(IMediator mediator, [FromBody] AddProductToBasketDto addProductToBasketDto)
         {
-            await FindUser(services, addProductToBasketDto.UserName);
-            return Results.Ok();
+            var response = await mediator.Send(addProductToBasketDto);
+            return Results.Ok(response);
         }
-        private static async Task<IResult> GetUserBasket(IServiceProvider services, [FromRoute] string userName)
+        private static async Task<IResult> GetUserBasket(IMediator mediator, [FromRoute] string id)
         {
-            await FindUser(services, userName);
-            return Results.Ok();
-        }
-        private static async Task FindUser(IServiceProvider services, string userName)
-        {
-            var userManager = services.GetRequiredService<UserManager<User>>();
-            var user = await userManager.FindByNameAsync(userName);
-            if (user is null)
-            {
-                throw new UserNotFoundExcepiton();
-            }
+            var response = await mediator.Send(new GetUserBasketQueryRequest { UserId = id });
+            return Results.Ok(response);
         }
 
     }

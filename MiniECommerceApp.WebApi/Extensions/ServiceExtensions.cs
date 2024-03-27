@@ -33,7 +33,7 @@ namespace MiniECommerceApp.WebApi.Extensions
         {
             services.AddScoped<IProductDal, ProductDal>();
             services.AddScoped<ICategoryDal, CategoryDal>();
-
+            services.AddScoped<IBasketDal, BasketDal>();
             services.AddScoped<ISortHelper<Product>, SortHelper<Product>>();
             services.AddScoped<IDataShaper<Product>, DataShaper<Product>>();
 
