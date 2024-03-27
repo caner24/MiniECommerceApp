@@ -26,7 +26,7 @@ namespace MiniECommerceApp.WebApi.MapGroups
         {
             return Results.Content($"<h2>Hi !. Welcome to the admin page </h2>", "text/html");
         }
-        private static async Task<IResult> AddProduct(IMediator mediator, AddProductCommandRequest addProductCommandRequest)
+        private static async Task<IResult> AddProduct(IMediator mediator, [FromBody] AddProductCommandRequest addProductCommandRequest)
         {
             var addedProduct = await mediator.Send(addProductCommandRequest);
             if (addedProduct.IsAdded)

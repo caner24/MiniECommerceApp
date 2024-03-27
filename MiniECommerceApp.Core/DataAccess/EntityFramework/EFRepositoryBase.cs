@@ -26,13 +26,14 @@ namespace MiniECommerceApp.Core.DataAccess.EntityFramework
 
         public async Task DeleteAsync(TEntity entity)
         {
+
             _tContext.Remove(entity);
             await _tContext.SaveChangesAsync();
         }
 
         public IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> filter)
         {
-            return _tContext.Set<TEntity>().Where(filter).AsNoTracking();
+            return _tContext.Set<TEntity>().Where(filter);
         }
 
         public IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> filter = null)

@@ -8,7 +8,7 @@ namespace MiniECommerceApp.Entity.DTOs
 {
     public record AddProductToBasketDto
     {
-        public string UserName { get; init; }
+        public string UserId { get; init; }
 
         public HashSet<Product> Products { get; init; }
 

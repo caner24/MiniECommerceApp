@@ -16,8 +16,9 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
     {
         private readonly IMapper _mapper;
         private readonly ICategoryDal _categoryDal;
-        public AddCategoryCommandHandler(ICategoryDal categoryDal)
+        public AddCategoryCommandHandler(ICategoryDal categoryDal, IMapper mapper)
         {
+            _mapper = mapper;
             _categoryDal = categoryDal;
         }
 
@@ -29,7 +30,7 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
             {
                 return new AddCategoryCommandResponse { IsAdded = true, Category = addedCategory };
             }
-            return new AddCategoryCommandResponse { IsAdded = false};
+            return new AddCategoryCommandResponse { IsAdded = false };
         }
     }
 }

@@ -5,7 +5,7 @@ using MiniECommerceApp.WebApi.Extensions;
 using MiniECommerceApp.WebApi.MapGroups;
 using System.Reflection;
 using System.Text.Json.Serialization;
-
+using MiniECommerceApp.WebApi.SeedData;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.IdentityConfiguration(builder.Configuration);
@@ -30,6 +30,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+await app.IsAdminUserExist();
 app.UseHttpsRedirection();
 app.UseStaticFiles(new StaticFileOptions
 {
@@ -37,6 +38,7 @@ app.UseStaticFiles(new StaticFileOptions
            Path.Combine(builder.Environment.ContentRootPath, "Media")),
     RequestPath = "/Files"
 });
+
 #region Apis
 app.UseAntiforgery();
 app.MapGroup("/api/identity").MapIdentityApi<User>();
@@ -49,6 +51,7 @@ app.MapGroup("/api/basket").RequireAuthorization(x => { x.RequireAuthenticatedUs
 app.MapGroup("api/product").MapProductApi();
 app.MapGroup("api/file").DisableAntiforgery().MapFileApi();
 #endregion
+
 app.UseExceptionHandler();
 app.UseCors("CorsPolicy");
 app.UseAuthentication();

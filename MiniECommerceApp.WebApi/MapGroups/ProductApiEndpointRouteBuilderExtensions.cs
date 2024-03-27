@@ -24,6 +24,8 @@ namespace MiniECommerceApp.WebApi.MapGroups
         {
             endpointRouteBuilder.MapGet("/getAllProduct", GetAllProduct);
 
+            endpointRouteBuilder.MapGet("/getAllCategories", GetAllCategories);
+
             endpointRouteBuilder.MapGet("/getProductById/{id}", GetProductById);
         }
         private static async Task<IResult> GetAllProduct(IMediator mediator, [AsParameters] GetAllProductQueryRequest getAllProductQueryRequest)
@@ -41,9 +43,16 @@ namespace MiniECommerceApp.WebApi.MapGroups
             //Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Results.Ok(response);
         }
+
+        private static async Task<IResult> GetAllCategories(ICategoryDal categoryDal)
+        {
+            var categories = await categoryDal.GetAll().ToListAsync();
+            return Results.Ok(categories);
+        }
+
         private static async Task<IResult> GetProductById(IProductDal productDal, [FromRoute] int Id)
         {
-            var product = await productDal.Get(x => x.Id == Id).Include(x=>x.Categories).Include(x=>x.ProductDetail).FirstOrDefaultAsync();
+            var product = await productDal.Get(x => x.Id == Id).Include(x => x.Categories).Include(x => x.ProductDetail).FirstOrDefaultAsync();
             if (product is not null)
             {
                 return Results.Ok(product);
