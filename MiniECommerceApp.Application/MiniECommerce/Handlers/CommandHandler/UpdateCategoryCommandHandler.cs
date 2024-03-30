@@ -27,6 +27,7 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
             var category = await _categoryDal.Get(x => x.Id == request.Id).FirstOrDefaultAsync();
             if (category is not null)
             {
+                category.CategoryName = request.CategoryName;
                 var updatedCategory = await _categoryDal.UpdateAsync(category);
                 return new UpdateCategoryCommandResponse { IsUpdated = true, Category = updatedCategory };
             }

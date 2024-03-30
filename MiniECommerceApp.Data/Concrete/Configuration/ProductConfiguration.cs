@@ -16,6 +16,7 @@ namespace MiniECommerceApp.Data.Concrete.Configuration
         {
             builder.Navigation(e => e.ProductPhotos).AutoInclude();
             builder.Navigation(e => e.Categories).AutoInclude();
+            builder.Property(x => x.ConcurrencyToken).IsRowVersion();
         }
     }
 }

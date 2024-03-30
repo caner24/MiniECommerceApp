@@ -4,13 +4,18 @@
     {
         public static void MapInvoicesApi(this IEndpointRouteBuilder endpoints)
         {
-            endpoints.MapPost("/addInvoices/", AddInvoices);
+            endpoints.MapPost("/addInvoices/", CreateInvoices);
         }
 
-        private static IResult AddInvoices()
+        private static IResult CreateInvoices()
         {
             return Results.Ok();
         }
 
+
+        private static IResult GetAllInvoices()
+        {
+            return Results.Ok();
+        }
     }
 }

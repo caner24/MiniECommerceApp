@@ -19,6 +19,7 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.1" />
+    <PackageReference Include="Stripe.net" Version="43.21.0" />
   </ItemGroup>
 
   <ItemGroup>

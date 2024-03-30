@@ -28,7 +28,7 @@ namespace MiniECommerceApp.WebApi.MapGroups
 
             endpointRouteBuilder.MapGet("/getProductById/{id}", GetProductById);
         }
-        private static async Task<IResult> GetAllProduct(IMediator mediator, [AsParameters] GetAllProductQueryRequest getAllProductQueryRequest)
+        private static async Task<IResult> GetAllProduct(HttpContext context, IMediator mediator, [AsParameters] GetAllProductQueryRequest getAllProductQueryRequest)
         {
             var response = await mediator.Send(getAllProductQueryRequest);
             var metadata = new
@@ -40,7 +40,7 @@ namespace MiniECommerceApp.WebApi.MapGroups
                 response.HasNext,
                 response.HasPrevious
             };
-            //Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            context.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Results.Ok(response);
         }
 

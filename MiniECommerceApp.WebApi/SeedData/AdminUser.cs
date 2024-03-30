@@ -19,10 +19,10 @@ namespace MiniECommerceApp.WebApi.SeedData
                 await roleManager.CreateAsync(new IdentityRole("Admin"));
             }
 
-            var adminUser = await userManager.FindByNameAsync(app.Configuration["AdminUser:UserName"]);
+            var adminUser = await userManager.FindByNameAsync(app.Configuration["AdminUser:Email"]);
             if (adminUser == null)
             {
-                var newUser = new User { UserName = app.Configuration["AdminUser:UserName"],Email= app.Configuration["AdminUser:Email"] };
+                var newUser = new User { UserName = app.Configuration["AdminUser:Email"], Email = app.Configuration["AdminUser:Email"] };
                 var result = await userManager.CreateAsync(newUser, app.Configuration["AdminUser:Password"]);
 
                 if (result.Succeeded)

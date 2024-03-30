@@ -28,7 +28,7 @@ namespace MiniECommerceApp.WebApi.MapGroups
         }
         private async static Task<IResult> AddProductPhotos(IProductDal productDal, IFormFileCollection formFileCollection, int productId)
         {
-            var product = await productDal.Get(x => x.Id == productId).Include(x => x.ProductDetail).FirstOrDefaultAsync();
+            var product = await productDal.Get(x => x.Id == productId).Include(x => x.ProductDetail).AsNoTracking().FirstOrDefaultAsync();
             if (product is not null)
             {
                 var folder = Path.Combine(Directory.GetCurrentDirectory(), "Media");
@@ -40,23 +40,22 @@ namespace MiniECommerceApp.WebApi.MapGroups
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
                         await item.CopyToAsync(stream);
-                        product.ProductPhotos.Add(new Entity.Photos { PhotosUrl = path });
+                        product.ProductPhotos.Add(new Entity.Photos { PhotosUrl = path.Replace("/app/Media", "Files") });
                     }
                 }
                 var response = await productDal.UpdateAsync(product);
                 return Results.Ok(response);
             }
             return Results.BadRequest();
-
         }
         private async static Task<IResult> GetProductPhotos(IProductDal productDal, [FromRoute] int id)
         {
-            var product = await productDal.Get(x => x.Id == id).Include(x => x.ProductPhotos).FirstOrDefaultAsync();
+            var product = await productDal.Get(x => x.Id == id).Include(x => x.ProductPhotos).AsNoTracking().FirstOrDefaultAsync();
             if (product is not null)
             {
                 var photoList = product.ProductPhotos.Select(x => new
                 {
-                    PhotoUrl = x.PhotosUrl.Replace("/app/Media", "/Files")
+                    PhotoUrl = x.PhotosUrl
                 }).ToList();
 
                 return Results.Ok(photoList);
@@ -67,7 +66,7 @@ namespace MiniECommerceApp.WebApi.MapGroups
 
         public static async Task<IResult> Download(IProductDal productDal, [FromRoute] int id)
         {
-            var product = await productDal.Get(x => x.Id == id).Include(x => x.ProductPhotos).FirstOrDefaultAsync();
+            var product = await productDal.Get(x => x.Id == id).Include(x => x.ProductPhotos).AsNoTracking().FirstOrDefaultAsync();
             var provider = new FileExtensionContentTypeProvider();
 
             if (product is not null)

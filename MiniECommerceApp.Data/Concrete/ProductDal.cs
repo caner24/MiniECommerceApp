@@ -13,6 +13,7 @@ namespace MiniECommerceApp.Data.Concrete
     {
         public ProductDal(MiniECommerceContext tContext) : base(tContext)
         {
+
         }
     }
 }
