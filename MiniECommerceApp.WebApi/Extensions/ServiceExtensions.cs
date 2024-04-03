@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using MiniECommerceApp.Core.CrosssCuttingConcerns.Caching;
+using MiniECommerceApp.Core.CrosssCuttingConcerns.MailService;
 using MiniECommerceApp.Data.Abstract;
 using MiniECommerceApp.Data.Concrete;
 using MiniECommerceApp.Entity;
 using MiniECommerceApp.Entity.Helpers;
+using MiniECommerceApp.WebApi.Mail;
+using System.Threading.RateLimiting;
 
 namespace MiniECommerceApp.WebApi.Extensions
 {
@@ -29,13 +33,56 @@ namespace MiniECommerceApp.WebApi.Extensions
             });
         }
 
-        public static void ServiceLifetimeSetup(this IServiceCollection services)
+        public static void AddRateLimiting(this IServiceCollection services)
+        {
+            services.AddRateLimiter(options =>
+            {
+                options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+                        RateLimitPartition.GetFixedWindowLimiter(
+                            partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
+                            factory: partition => new FixedWindowRateLimiterOptions
+                            {
+                                AutoReplenishment = true,
+                                PermitLimit = 5,
+                                QueueLimit = 2,
+                                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                                Window = TimeSpan.FromMinutes(1)
+                            }));
+                options.OnRejected = async (context, token) =>
+                {
+                    context.HttpContext.Response.StatusCode = 429;
+                    if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+                    {
+                        await context.HttpContext.Response.WriteAsync(
+                            $"Çok fazla istekde bulundunuz. Lütfen sonra tekrar deneyin {retryAfter.TotalMinutes} dakika. ", cancellationToken: token);
+                    }
+                    else
+                    {
+                        await context.HttpContext.Response.WriteAsync(
+                            "Çok fazla istekde bulundunuz. Lütfen sonra tekrar deneyin. ", cancellationToken: token);
+                    }
+                };
+            });
+        }
+        public static void ServiceLifetimeSetup(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IProductDal, ProductDal>();
             services.AddScoped<ICategoryDal, CategoryDal>();
             services.AddScoped<IBasketDal, BasketDal>();
             services.AddScoped<ISortHelper<Product>, SortHelper<Product>>();
             services.AddScoped<IDataShaper<Product>, DataShaper<Product>>();
+
+
+            var emailConfig = configuration
+         .GetSection("EmailConfiguration")
+         .Get<EmailConfiguration>();
+
+            services.AddSingleton(emailConfig);
+            services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddSingleton<IEmailSender<User>, MailSender>();
+
+
+
 
         }
         public static void ConfigureCors(this IServiceCollection services)
@@ -49,6 +96,16 @@ namespace MiniECommerceApp.WebApi.Extensions
                     .WithExposedHeaders("X-Pagination")
                 );
             });
+        }
+
+        public static void RedisCacheSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = configuration["Redis:DefaultConnection"];
+            });
+            services.AddSingleton<RedisCacheService>();
+
         }
 
         public static void IdentityConfiguration(this IServiceCollection services, IConfiguration configuration)
@@ -67,6 +124,8 @@ namespace MiniECommerceApp.WebApi.Extensions
                 options.Lockout.MaxFailedAccessAttempts = 3;
             }).AddUserManager<UserManager<User>>().AddRoles<IdentityRole>().AddRoleManager<RoleManager<IdentityRole>>().AddApiEndpoints().AddDefaultTokenProviders().AddEntityFrameworkStores<MiniECommerceContext>();
             services.AddAuthorizationBuilder();
+            services.Configure<DataProtectionTokenProviderOptions>(opt =>
+     opt.TokenLifespan = TimeSpan.FromHours(2));
         }
     }
 }

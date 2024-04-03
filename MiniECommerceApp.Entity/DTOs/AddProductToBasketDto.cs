@@ -10,7 +10,7 @@ namespace MiniECommerceApp.Entity.DTOs
     {
         public string UserId { get; init; }
 
-        public HashSet<Product> Products { get; init; }
+        public List<int> ProdId { get; init; }
 
     }
 }

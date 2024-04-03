@@ -6,19 +6,28 @@ using MiniECommerceApp.WebApi.MapGroups;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using MiniECommerceApp.WebApi.SeedData;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
+using System.Text.Json;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.IdentityConfiguration(builder.Configuration);
 builder.Services.SwaggerConfiguration();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
-builder.Services.ServiceLifetimeSetup();
+builder.Services.ServiceLifetimeSetup(builder.Configuration);
 builder.Services.AddProblemDetails();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Load("MiniECommerceApp.Application")));
 builder.Services.ConfigureCors();
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddAntiforgery();
-
+builder.Services.RedisCacheSettings(builder.Configuration);
+builder.Services.AddRateLimiting();
+JsonSerializerSettings serializerSettings = new JsonSerializerSettings
+{
+    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+    ContractResolver = new CamelCasePropertyNamesContractResolver()
+};
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -51,7 +60,7 @@ app.MapGroup("/api/basket").RequireAuthorization(x => { x.RequireAuthenticatedUs
 app.MapGroup("api/product").MapProductApi();
 app.MapGroup("api/file").DisableAntiforgery().MapFileApi();
 #endregion
-
+app.UseRateLimiter();
 app.UseExceptionHandler();
 app.UseCors("CorsPolicy");
 app.UseAuthentication();

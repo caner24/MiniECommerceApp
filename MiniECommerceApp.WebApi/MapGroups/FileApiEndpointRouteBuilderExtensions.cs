@@ -28,7 +28,7 @@ namespace MiniECommerceApp.WebApi.MapGroups
         }
         private async static Task<IResult> AddProductPhotos(IProductDal productDal, IFormFileCollection formFileCollection, int productId)
         {
-            var product = await productDal.Get(x => x.Id == productId).Include(x => x.ProductDetail).AsNoTracking().FirstOrDefaultAsync();
+            var product = await productDal.Get(x => x.Id == productId).Include(x => x.ProductDetail).FirstOrDefaultAsync();
             if (product is not null)
             {
                 var folder = Path.Combine(Directory.GetCurrentDirectory(), "Media");

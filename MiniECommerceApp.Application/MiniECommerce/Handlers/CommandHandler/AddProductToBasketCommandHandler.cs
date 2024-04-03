@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using MiniECommerceApp.Application.MiniECommerce.Commands.Request;
 using MiniECommerceApp.Application.MiniECommerce.Commands.Response;
 using MiniECommerceApp.Data.Abstract;
+using MiniECommerceApp.Data.Concrete;
 using MiniECommerceApp.Entity;
 using System;
 using System.Collections.Generic;
@@ -17,31 +18,37 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
     {
         private readonly IMapper _mapper;
         private readonly IBasketDal _basketDal;
-        public AddProductToBasketCommandHandler(IBasketDal basketDal, IMapper mapper)
+        private readonly IProductDal _productDal;
+        public AddProductToBasketCommandHandler(IProductDal productDal, IBasketDal basketDal, IMapper mapper)
         {
             _mapper = mapper;
             _basketDal = basketDal;
+            _productDal = productDal;
         }
         public async Task<AddProductToBasketCommandResponse> Handle(AddProductToBasketCommandRequest request, CancellationToken cancellationToken)
         {
-            var basket = await _basketDal.Get(x => x.UserId == request.UserId).Include(x => x.Products).FirstOrDefaultAsync();
-            if (basket is null)
+            var basket = await _basketDal.GetAll().Include(x => x.User).Where(x => x.User.UserName == request.UserId).FirstOrDefaultAsync();
+            if (basket.Products is null)
             {
-                var newBasket = new Basket { UserId = request.UserId };
-                foreach (var item in request.Products)
+                var newBasket = new Basket { UserId = request.UserId, Products = new List<Product>() };
+                foreach (var item in request.ProdId)
                 {
-                    newBasket.Products.Add(item);
+                    var products = await _productDal.Get(x => x.Id == item).FirstOrDefaultAsync();
+                    if (products is not null)
+                        newBasket.Products.Add(products);
                 }
                 var addedBasket = await _basketDal.AddAsync(newBasket);
                 return new AddProductToBasketCommandResponse { Basket = newBasket, IsBaketAdded = true };
             }
             else
             {
-                foreach (var item in request.Products)
+                foreach (var item in request.ProdId)
                 {
-                    basket.Products.Add(item);
+                    var products = await _productDal.Get(x => x.Id == item).FirstOrDefaultAsync();
+                    if (products is not null)
+                        basket.Products.Add(products);
                 }
-                var addedBasket = await _basketDal.UpdateAsync(new Basket { UserId = request.UserId });
+                var addedBasket = await _basketDal.UpdateAsync(basket);
             }
 
             return new AddProductToBasketCommandResponse { Basket = basket, IsBaketAdded = true };

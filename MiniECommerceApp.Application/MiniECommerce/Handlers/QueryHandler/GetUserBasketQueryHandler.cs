@@ -21,7 +21,7 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.QueryHandler
         }
         public async Task<GetUserBasketQueryResponse> Handle(GetUserBasketQueryRequest request, CancellationToken cancellationToken)
         {
-            var userBasket = await _basketDal.GetAll(x => x.UserId == request.UserId).FirstOrDefaultAsync();
+            var userBasket = await _basketDal.GetAll().Include(x => x.User).Where(x => x.User.UserName == request.UserId).FirstOrDefaultAsync();
             if (userBasket == null)
             {
                 throw new EmptyBasketException();

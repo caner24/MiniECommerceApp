@@ -2,7 +2,20 @@ version: '3.4'
 
 services:
   miniecommerceapp.webapi:
-    image: ${DOCKER_REGISTRY-}miniecommerceappwebapi
+    image: registry.digitalocean.com/aspnetwithredis/miniecommerceappwebapi
     build:
       context: .
       dockerfile: MiniECommerceApp.WebApi/Dockerfile
+  redis:
+    image: redis:latest
+    volumes:
+      - ./redis_data:/data
+    ports:
+      - "6379:6379"  
+
+  rabbitmq:
+    image: rabbitmq:latest
+    volumes:
+      - ./rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"

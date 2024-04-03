@@ -6,9 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using MiniECommerceApp.Application.MiniECommerce.Commands.Request;
 using MiniECommerceApp.Application.MiniECommerce.Queries.Request;
+using MiniECommerceApp.Core.CrosssCuttingConcerns.Caching;
 using MiniECommerceApp.Data.Abstract;
 using MiniECommerceApp.Entity;
 using MiniECommerceApp.Entity.Exceptions;
+using MiniECommerceApp.Entity.Helpers;
 using MiniECommerceApp.Entity.Models;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -28,20 +30,26 @@ namespace MiniECommerceApp.WebApi.MapGroups
 
             endpointRouteBuilder.MapGet("/getProductById/{id}", GetProductById);
         }
-        private static async Task<IResult> GetAllProduct(HttpContext context, IMediator mediator, [AsParameters] GetAllProductQueryRequest getAllProductQueryRequest)
+        private static async Task<IResult> GetAllProduct([FromServices] RedisCacheService cache, HttpContext context, IMediator mediator, [AsParameters] GetAllProductQueryRequest getAllProductQueryRequest)
         {
-            var response = await mediator.Send(getAllProductQueryRequest);
-            var metadata = new
+            var cachedData = cache.GetCachedData<PagedList<MiniECommerceApp.Entity.Models.Entity>>("productCache");
+            if (cachedData is null)
             {
-                response.TotalCount,
-                response.PageSize,
-                response.CurrentPage,
-                response.TotalPages,
-                response.HasNext,
-                response.HasPrevious
-            };
-            context.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
-            return Results.Ok(response);
+                var response = await mediator.Send(getAllProductQueryRequest);
+                var metadata = new
+                {
+                    response.TotalCount,
+                    response.PageSize,
+                    response.CurrentPage,
+                    response.TotalPages,
+                    response.HasNext,
+                    response.HasPrevious
+                };
+                context.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                cache.SetCachedData("productCache", response, TimeSpan.FromSeconds(60));
+                return Results.Ok(response);
+            }
+            return Results.Ok(cachedData);
         }
 
         private static async Task<IResult> GetAllCategories(ICategoryDal categoryDal)
