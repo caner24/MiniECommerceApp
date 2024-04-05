@@ -9,6 +9,8 @@ using MiniECommerceApp.WebApi.SeedData;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using System.Text.Json;
+using Prometheus;
+using MiniECommerceApp.WebApi.TaskScheduler;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.IdentityConfiguration(builder.Configuration);
@@ -23,6 +25,9 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =
 builder.Services.AddAntiforgery();
 builder.Services.RedisCacheSettings(builder.Configuration);
 builder.Services.AddRateLimiting();
+builder.Services.AddHostedService<InitializationBackgroundService>();
+
+
 JsonSerializerSettings serializerSettings = new JsonSerializerSettings
 {
     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
@@ -49,6 +54,7 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 #region Apis
+
 app.UseAntiforgery();
 app.MapGroup("/api/identity").MapIdentityApi<User>();
 app.MapGroup("/api/admin").RequireAuthorization(x =>
@@ -59,7 +65,12 @@ app.MapGroup("/api/admin").RequireAuthorization(x =>
 app.MapGroup("/api/basket").RequireAuthorization(x => { x.RequireAuthenticatedUser(); }).MapBasketApi();
 app.MapGroup("api/product").MapProductApi();
 app.MapGroup("api/file").DisableAntiforgery().MapFileApi();
+
+
+
 #endregion
+app.UseHttpMetrics();
+app.MapMetrics();
 app.UseRateLimiter();
 app.UseExceptionHandler();
 app.UseCors("CorsPolicy");

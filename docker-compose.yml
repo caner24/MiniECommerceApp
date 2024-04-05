@@ -12,10 +12,26 @@ services:
       - ./redis_data:/data
     ports:
       - "6379:6379"  
-
   rabbitmq:
-    image: rabbitmq:latest
-    volumes:
-      - ./rabbitmq_data:/var/lib/rabbitmq
+    image: rabbitmq:3-management
+    hostname: my-rabbitmq-server
     ports:
       - "5672:5672"
+      - "15672:15672"
+  prometheus:
+    image: ubuntu/prometheus
+    container_name: prometheus
+    ports:
+      - "5100:9090"
+    environment:
+      - TZ=UTC
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "5200:3000"
+    volumes:
+      - ./grafana-data/data:/var/lib/grafana

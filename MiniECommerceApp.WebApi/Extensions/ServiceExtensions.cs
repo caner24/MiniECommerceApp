@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MiniECommerceApp.Core.CrosssCuttingConcerns.Caching;
@@ -64,26 +65,25 @@ namespace MiniECommerceApp.WebApi.Extensions
                 };
             });
         }
+
+
         public static void ServiceLifetimeSetup(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IProductDal, ProductDal>();
             services.AddScoped<ICategoryDal, CategoryDal>();
             services.AddScoped<IBasketDal, BasketDal>();
+            services.AddScoped<IInvoicesDal, InvoiceDal>();
+
+            services.AddSingleton<IMessageProducer, RabbitMQProducer>();
             services.AddScoped<ISortHelper<Product>, SortHelper<Product>>();
             services.AddScoped<IDataShaper<Product>, DataShaper<Product>>();
-
 
             var emailConfig = configuration
          .GetSection("EmailConfiguration")
          .Get<EmailConfiguration>();
-
             services.AddSingleton(emailConfig);
             services.AddSingleton<IEmailSender, EmailSender>();
             services.AddSingleton<IEmailSender<User>, MailSender>();
-
-
-
-
         }
         public static void ConfigureCors(this IServiceCollection services)
         {

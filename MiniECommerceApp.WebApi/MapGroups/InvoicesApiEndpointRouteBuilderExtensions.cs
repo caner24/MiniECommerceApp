@@ -9,11 +9,11 @@
 
         private static IResult CreateInvoices()
         {
-            return Results.Ok();
+            return Results.Content("", "text/html");
         }
 
 
-        private static IResult GetAllInvoices()
+        private static IResult GetInvoices()
         {
             return Results.Ok();
         }

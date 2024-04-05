@@ -16,7 +16,6 @@ namespace MiniECommerceApp.Entity
         public int Id { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
-
         public List<Product> Product { get; set; }
         public Guid InvoiceNo { get; set; }
 

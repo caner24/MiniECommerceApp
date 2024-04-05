@@ -13,6 +13,9 @@ namespace MiniECommerceApp.WebApi.Extensions
                 {
                     UserNotFoundExcepiton => StatusCodes.Status404NotFound,
                     ProductNotFoundException => StatusCodes.Status404NotFound,
+                    CategoryNotFoundException => StatusCodes.Status404NotFound,
+                    NotEnoughtAmountException => StatusCodes.Status406NotAcceptable,
+                    EmptyBasketException => StatusCodes.Status404NotFound,
                     _ => StatusCodes.Status500InternalServerError
                 };
                 var jsonMessage = new
