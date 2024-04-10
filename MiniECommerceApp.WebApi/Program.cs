@@ -63,9 +63,10 @@ app.MapGroup("/api/admin").RequireAuthorization(x =>
     x.RequireRole("Admin");
 }).MapAdminApi();
 app.MapGroup("/api/basket").RequireAuthorization(x => { x.RequireAuthenticatedUser(); }).MapBasketApi();
-app.MapGroup("api/product").MapProductApi();
-app.MapGroup("api/file").DisableAntiforgery().MapFileApi();
-
+app.MapGroup("/api/product").MapProductApi();
+app.MapGroup("/api/file").DisableAntiforgery().MapFileApi();
+app.MapGroup("/api/invoices").MapInvoicesApi();
+app.MapGroup("api/comments").RequireAuthorization(x => { x.RequireAuthenticatedUser(); }).MapCommentApi();
 
 
 #endregion

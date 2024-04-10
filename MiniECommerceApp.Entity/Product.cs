@@ -14,6 +14,7 @@ namespace MiniECommerceApp.Entity
             Invoices = new List<Invoice>();
             ProductPhotos = new List<Photos>();
             Categories = new List<Category>();
+            Comments = new List<Comment>();
         }
         public int Id { get; set; }
         public string ProductName { get; set; }
@@ -23,5 +24,6 @@ namespace MiniECommerceApp.Entity
         public List<Category> Categories { get; set; }
         public List<Invoice> Invoices { get; set; }
         public List<Photos> ProductPhotos { get; set; }
+        public List<Comment> Comments { get; set; }
     }
 }

@@ -215,6 +215,37 @@ namespace MiniECommerceApp.WebApi.Migrations
                     b.ToTable("Category");
                 });
 
+            modelBuilder.Entity("MiniECommerceApp.Entity.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CommentText")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsValidComment")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comment");
+                });
+
             modelBuilder.Entity("MiniECommerceApp.Entity.Favorites", b =>
                 {
                     b.Property<int>("ProductDetailId")
@@ -483,6 +514,25 @@ namespace MiniECommerceApp.WebApi.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("MiniECommerceApp.Entity.Comment", b =>
+                {
+                    b.HasOne("MiniECommerceApp.Entity.Product", "Product")
+                        .WithMany("Comments")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MiniECommerceApp.Entity.User", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MiniECommerceApp.Entity.Favorites", b =>
                 {
                     b.HasOne("MiniECommerceApp.Entity.ProductDetail", "ProductDetail")
@@ -541,6 +591,8 @@ namespace MiniECommerceApp.WebApi.Migrations
 
             modelBuilder.Entity("MiniECommerceApp.Entity.Product", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("ProductDetail")
                         .IsRequired();
                 });
@@ -549,6 +601,8 @@ namespace MiniECommerceApp.WebApi.Migrations
                 {
                     b.Navigation("Basket")
                         .IsRequired();
+
+                    b.Navigation("Comments");
 
                     b.Navigation("Invoices");
                 });

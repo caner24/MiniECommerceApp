@@ -53,13 +53,25 @@ namespace MiniECommerceApp.WebApi.MapGroups
             var product = await productDal.Get(x => x.Id == id).Include(x => x.ProductPhotos).AsNoTracking().FirstOrDefaultAsync();
             if (product is not null)
             {
-                var photoList = product.ProductPhotos.Select(x => new
+                if (product.ProductPhotos.Count > 1)
                 {
-                    PhotoUrl = x.PhotosUrl
-                }).ToList();
+                    var photoList = product.ProductPhotos.Select(x => new
+                    {
+                        PhotoUrl = x.PhotosUrl
+                    }).ToList();
 
-                return Results.Ok(photoList);
+                    return Results.Ok(photoList);
+                }
+                var photosUrl = product.ProductPhotos.Take(1).FirstOrDefault().PhotosUrl.Replace("Files", "Media");
+                var provider = new FileExtensionContentTypeProvider();
 
+                if (!provider.TryGetContentType(photosUrl, out var contentType))
+                {
+                    contentType = "application/octet-stream";
+                }
+
+                var bytes = await System.IO.File.ReadAllBytesAsync(photosUrl);
+                return Results.File(bytes, contentType, Path.GetFileName(photosUrl));
             }
             return Results.BadRequest();
         }
@@ -71,7 +83,7 @@ namespace MiniECommerceApp.WebApi.MapGroups
 
             if (product is not null)
             {
-                var photoUrls = product.ProductPhotos.Select(x => x.PhotosUrl).ToList();
+                var photoUrls = product.ProductPhotos.Select(x => x.PhotosUrl.Replace("Files","Media")).ToList();
                 var zipFileName = $"product_photos_{Guid.NewGuid()}.zip";
                 var zipFilePath = Path.Combine(Path.GetTempPath(), zipFileName);
                 if (System.IO.File.Exists(zipFilePath))

@@ -60,7 +60,7 @@ namespace MiniECommerceApp.WebApi.MapGroups
 
         private static async Task<IResult> GetProductById(IProductDal productDal, [FromRoute] int Id)
         {
-            var product = await productDal.Get(x => x.Id == Id).Include(x => x.Categories).Include(x => x.ProductDetail).FirstOrDefaultAsync();
+            var product = await productDal.Get(x => x.Id == Id).Include(x => x.Categories).Include(x => x.ProductDetail).Include(x => x.Comments).FirstOrDefaultAsync();
             if (product is not null)
             {
                 return Results.Ok(product);
