@@ -1,23 +1,38 @@
 version: '3.4'
 
 services:
-  miniecommerceapp.webapi:
-    image: registry.digitalocean.com/aspnetwithredis/miniecommerceappwebapi
-    build:
-      context: .
-      dockerfile: MiniECommerceApp.WebApi/Dockerfile
-  redis:
-    image: redis:latest
-    volumes:
-      - ./redis_data:/data
-    ports:
-      - "6379:6379"  
+
   rabbitmq:
     image: rabbitmq:3-management
     hostname: my-rabbitmq-server
     ports:
       - "5672:5672"
       - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  miniecommerceapp.webapi:
+    image: registry.digitalocean.com/aspnetwithredis/miniecommerceapp:latest
+    build:
+      context: .
+      dockerfile: MiniECommerceApp.WebApi/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  redis:
+    image: redis:latest
+    volumes:
+      - ./redis_data:/data
+    ports:
+      - "6379:6379"
+
   prometheus:
     image: ubuntu/prometheus
     container_name: prometheus
