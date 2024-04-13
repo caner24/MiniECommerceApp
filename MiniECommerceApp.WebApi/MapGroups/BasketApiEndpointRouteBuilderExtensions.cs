@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,17 +20,20 @@ namespace MiniECommerceApp.WebApi.MapGroups
             endpoints.MapPost("/updateUserBasket", UpdateUserBasket);
             endpoints.MapGet("/getUserBasket/{id}", GetUserBasket);
         }
-        private static async Task<IResult> AddProductToBasket(IMediator mediator, [FromBody] AddProductToBasketCommandRequest addProductToBasketDto)
+        private static async Task<IResult> AddProductToBasket([FromServices] IValidator<AddProductToBasketCommandRequest> validator, [FromServices] IMediator mediator, [FromBody] AddProductToBasketCommandRequest addProductToBasketDto)
         {
+            ValidationResult validationResult = await validator.ValidateAsync(addProductToBasketDto);
+            if (!validationResult.IsValid)
+                return Results.ValidationProblem(validationResult.ToDictionary());
             var response = await mediator.Send(addProductToBasketDto);
             return Results.Ok(response);
         }
-        private static async Task<IResult> GetUserBasket(IMediator mediator, [FromRoute] string id)
+        private static async Task<IResult> GetUserBasket([FromServices] IMediator mediator, [FromRoute] string id)
         {
             var response = await mediator.Send(new GetUserBasketQueryRequest { UserId = id });
             return Results.Ok(response);
         }
-        private static async Task<IResult> UpdateUserBasket(IMediator mediator, UpdateProductToBasketRequest updateProductToBasketDto)
+        private static async Task<IResult> UpdateUserBasket([FromServices] IMediator mediator, UpdateProductToBasketRequest updateProductToBasketDto)
         {
             var response = await mediator.Send(updateProductToBasketDto);
             return Results.Ok(response);

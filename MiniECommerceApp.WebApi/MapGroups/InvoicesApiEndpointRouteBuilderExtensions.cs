@@ -6,6 +6,12 @@ using System.Drawing.Printing;
 using System.Drawing;
 using System.Threading;
 using System.Xml.Linq;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using MiniECommerceApp.Application.MiniECommerce.Commands.Request;
+using FluentValidation;
+using MiniECommerceApp.Entity.DTOs;
+using FluentValidation.Results;
 
 namespace MiniECommerceApp.WebApi.MapGroups
 {
@@ -16,10 +22,13 @@ namespace MiniECommerceApp.WebApi.MapGroups
             endpoints.MapPost("/CreateInvoices/", CreateInvoices);
         }
 
-        private static IResult CreateInvoices()
+        private static async Task<IResult> CreateInvoices([FromServices] IValidator<CreateInvoiceDto> validator, [FromServices] IMediator mediator, [FromBody] CreateInvoiceCommandRequest createInvoicesCommandRequest)
         {
-         
-            return Results.Content("<h1>Ok !.</h1>", "text/html");
+            ValidationResult validationResult = await validator.ValidateAsync(createInvoicesCommandRequest);
+            if (!validationResult.IsValid)
+                return Results.ValidationProblem(validationResult.ToDictionary());
+            var response = await mediator.Send(createInvoicesCommandRequest);
+            return Results.Ok(response);
         }
 
     }

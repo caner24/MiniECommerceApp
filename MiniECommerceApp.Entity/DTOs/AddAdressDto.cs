@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniECommerceApp.Application.ActionFilters
+namespace MiniECommerceApp.Entity.DTOs
 {
-    public class ValidateMediaTypeAttribute
+    public record AddAdressDto
     {
     }
 }

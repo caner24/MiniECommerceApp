@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using MiniECommerceApp.Application.MiniECommerce.Commands.Request;
 using MiniECommerceApp.Application.MiniECommerce.Commands.Response;
 using MiniECommerceApp.Data.Abstract;
@@ -22,8 +23,10 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
             _categoryDal = categoryDal;
         }
 
+        
         public async Task<AddCategoryCommandResponse> Handle(AddCategoryCommandRequest request, CancellationToken cancellationToken)
         {
+
             var category = _mapper.Map<Category>(request);
             var addedCategory = await _categoryDal.AddAsync(category);
             if (addedCategory is not null)

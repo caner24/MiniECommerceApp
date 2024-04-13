@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using MiniECommerceApp.Application.MiniECommerce.Commands.Request;
@@ -26,41 +28,54 @@ namespace MiniECommerceApp.WebApi.MapGroups
         {
             return Results.Content($"<h2>Hi !. Welcome to the admin page </h2>", "text/html");
         }
-        private static async Task<IResult> AddProduct(IMediator mediator, [FromBody] AddProductCommandRequest addProductCommandRequest)
+
+        private static async Task<IResult> AddProduct([FromServices]IValidator<AddProductDto> validator, [FromServices] IMediator mediator, [FromBody] AddProductCommandRequest addProductCommandRequest)
         {
+            ValidationResult validationResult = await validator.ValidateAsync(addProductCommandRequest);
+            if (!validationResult.IsValid)
+                return Results.ValidationProblem(validationResult.ToDictionary());
+
             var addedProduct = await mediator.Send(addProductCommandRequest);
             if (addedProduct.IsAdded)
                 return Results.Ok(addedProduct);
 
             return Results.BadRequest(addedProduct.IsAdded);
         }
-
-        private static async Task<IResult> DeleteProduct(IMediator mediator, [FromRoute] int id)
+        private static async Task<IResult> DeleteProduct([FromServices] IMediator mediator, [FromRoute] int id)
         {
             var deletedProduct = await mediator.Send(new DeleteProductCommandRequest { Id = id });
             return Results.Ok(deletedProduct);
         }
-
-        private static async Task<IResult> UpdateProduct(IMediator mediator, [FromBody] UpdateProductCommandRequest updateProductCommandRequest)
+        private static async Task<IResult> UpdateProduct([FromServices] IValidator<UpdateProductDto> validator, [FromServices] IMediator mediator, [FromBody] UpdateProductCommandRequest updateProductCommandRequest)
         {
+            ValidationResult validationResult = await validator.ValidateAsync(updateProductCommandRequest);
+            if (!validationResult.IsValid)
+                return Results.ValidationProblem(validationResult.ToDictionary());
             var updatedProduct = await mediator.Send(updateProductCommandRequest);
             return Results.Ok(updatedProduct);
         }
-        private static async Task<IResult> AddCategory(IMediator mediator, AddCategoryCommandRequest addCategoryCommandRequest)
+
+        private static async Task<IResult> AddCategory([FromServices] IValidator<AddCategoryDto> validator, [FromServices] IMediator mediator, AddCategoryCommandRequest addCategoryCommandRequest)
         {
+            ValidationResult validationResult = await validator.ValidateAsync(addCategoryCommandRequest);
+            if (!validationResult.IsValid)
+                return Results.ValidationProblem(validationResult.ToDictionary());
             var addedCategory = await mediator.Send(addCategoryCommandRequest);
             if (addedCategory.IsAdded)
                 return Results.Ok(addedCategory);
 
             return Results.BadRequest(addedCategory.IsAdded);
         }
-        private static async Task<IResult> DeleteCategory(IMediator mediator, [FromRoute] int id)
+        private static async Task<IResult> DeleteCategory([FromServices] IValidator<DeleteCategoryDto> validator, IMediator mediator, [FromRoute] int id)
         {
             var addedCategory = await mediator.Send(new DeleteCategoryCommandRequest { Id = id });
             return Results.Ok(addedCategory);
         }
-        private static async Task<IResult> UpdateCategory(IMediator mediator, [FromBody] UpdateCategoryCommandRequest updateCategoryCommandRequest)
+        private static async Task<IResult> UpdateCategory([FromServices] IValidator<UpdateCategoryDto> validator, [FromServices] IMediator mediator, [FromBody] UpdateCategoryCommandRequest updateCategoryCommandRequest)
         {
+            ValidationResult validationResult = await validator.ValidateAsync(updateCategoryCommandRequest);
+            if (!validationResult.IsValid)
+                return Results.ValidationProblem(validationResult.ToDictionary());
             var updatedCategory = await mediator.Send(updateCategoryCommandRequest);
             return Results.Ok(updatedCategory);
 

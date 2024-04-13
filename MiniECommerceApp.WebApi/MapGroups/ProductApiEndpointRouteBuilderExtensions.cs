@@ -52,13 +52,13 @@ namespace MiniECommerceApp.WebApi.MapGroups
             return Results.Ok(cachedData);
         }
 
-        private static async Task<IResult> GetAllCategories(ICategoryDal categoryDal)
+        private static async Task<IResult> GetAllCategories([FromServices] ICategoryDal categoryDal)
         {
             var categories = await categoryDal.GetAll().ToListAsync();
             return Results.Ok(categories);
         }
 
-        private static async Task<IResult> GetProductById(IProductDal productDal, [FromRoute] int Id)
+        private static async Task<IResult> GetProductById([FromServices] IProductDal productDal, [FromRoute] int Id)
         {
             var product = await productDal.Get(x => x.Id == Id).Include(x => x.Categories).Include(x => x.ProductDetail).Include(x => x.Comments).FirstOrDefaultAsync();
             if (product is not null)

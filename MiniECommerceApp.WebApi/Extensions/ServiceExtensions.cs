@@ -1,12 +1,15 @@
 ﻿
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using MiniECommerceApp.Application.Validation.FluentValidation;
 using MiniECommerceApp.Core.CrosssCuttingConcerns.Caching;
 using MiniECommerceApp.Core.CrosssCuttingConcerns.MailService;
 using MiniECommerceApp.Data.Abstract;
 using MiniECommerceApp.Data.Concrete;
 using MiniECommerceApp.Entity;
+using MiniECommerceApp.Entity.DTOs;
 using MiniECommerceApp.Entity.Helpers;
 using MiniECommerceApp.WebApi.Mail;
 using System.Threading.RateLimiting;
@@ -126,6 +129,12 @@ namespace MiniECommerceApp.WebApi.Extensions
             services.AddAuthorizationBuilder();
             services.Configure<DataProtectionTokenProviderOptions>(opt =>
      opt.TokenLifespan = TimeSpan.FromHours(2));
+        }
+
+        public static void FluentValidationRegister(this IServiceCollection services)
+        {
+            services.AddScoped<IValidator<AddCommentsToProductDto>, CommentValidator>();
+
         }
     }
 }

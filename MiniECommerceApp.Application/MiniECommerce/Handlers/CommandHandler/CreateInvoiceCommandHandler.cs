@@ -8,9 +8,11 @@ using MiniECommerceApp.Entity;
 using MiniECommerceApp.Entity.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
 {
@@ -28,29 +30,37 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
         public async Task<CreateInvoiceCommandResponse> Handle(CreateInvoiceCommandRequest request, CancellationToken cancellationToken)
         {
             var lineTotal = 0;
-            var user = _context.Set<User>().Where(x => x.UserName == request.UserId).AsNoTracking().FirstOrDefaultAsync();
-            if (user is null)
-                throw new UserNotFoundExcepiton();
-            var invoices = new Invoice();
-            var transactionScope = await _context.Database.BeginTransactionAsync();
-            for (int i = 0; i < request.ProductId.Count(); i++)
+
+            using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                var product = await _productDal.Get(x => x.Id == request.ProductId[i]).FirstOrDefaultAsync();
-                if (product is not null)
+                var user = await _context.Set<User>().Where(x => x.UserName == request.UserId).FirstOrDefaultAsync();
+                if (user is null)
+                    throw new UserNotFoundExcepiton();
+
+                var invoices = new Invoice { UserId = user.Id, InvoiceNo = Guid.NewGuid() };
+
+                for (int i = 0; i < request.ProductId.Count(); i++)
                 {
-                    invoices.Product.Add(product);
-                    var newAmount = product.ProductDetail.Amount - request.Amount[i];
-                    if (newAmount < 0)
-                        throw new NotEnoughtAmountException();
-                    product.ProductDetail.Amount = newAmount;
-                    lineTotal = lineTotal + ((int)product.ProductPrice * request.Amount[i]);
-                    await _productDal.UpdateAsync(product);
+                    var product = await _productDal.Get(x => x.Id == request.ProductId[i]).Include(x => x.ProductDetail).FirstOrDefaultAsync();
+                    if (product is not null)
+                    {
+                        invoices.Product.Add(product);
+                        if (product.ProductDetail.Amount < request.Amount[i])
+                            throw new NotEnoughtAmountException();
+
+
+                        var newAmount = product.ProductDetail.Amount - request.Amount[i];
+
+                        product.ProductDetail.Amount = newAmount;
+                        lineTotal += (int)(product.ProductPrice * request.Amount[i]);
+                        await _productDal.UpdateAsync(product);
+                    }
                 }
-                invoices.UserId = request.UserId;
+                await _invoceDal.AddAsync(invoices);
+
+                await transaction.CommitAsync();
+                return new CreateInvoiceCommandResponse { IsOk = true, LineTotal = lineTotal };
             }
-            await _invoceDal.AddAsync(invoices);
-            await transactionScope.CommitAsync();
-            return new CreateInvoiceCommandResponse { IsOk = true, LineTotal = lineTotal };
         }
     }
 }

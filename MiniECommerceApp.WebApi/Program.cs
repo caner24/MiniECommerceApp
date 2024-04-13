@@ -26,6 +26,7 @@ builder.Services.AddAntiforgery();
 builder.Services.RedisCacheSettings(builder.Configuration);
 builder.Services.AddRateLimiting();
 builder.Services.AddHostedService<InitializationBackgroundService>();
+builder.Services.FluentValidationRegister();
 
 
 JsonSerializerSettings serializerSettings = new JsonSerializerSettings
@@ -35,14 +36,14 @@ JsonSerializerSettings serializerSettings = new JsonSerializerSettings
 };
 
 var app = builder.Build();
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
     });
-}
+//}
 
 await app.IsAdminUserExist();
 app.UseHttpsRedirection();
@@ -65,7 +66,7 @@ app.MapGroup("/api/admin").RequireAuthorization(x =>
 app.MapGroup("/api/basket").RequireAuthorization(x => { x.RequireAuthenticatedUser(); }).MapBasketApi();
 app.MapGroup("/api/product").MapProductApi();
 app.MapGroup("/api/file").DisableAntiforgery().MapFileApi();
-app.MapGroup("/api/invoices").MapInvoicesApi();
+app.MapGroup("/api/invoices").RequireAuthorization(x => { x.RequireAuthenticatedUser(); }).MapInvoicesApi();
 app.MapGroup("api/comments").RequireAuthorization(x => { x.RequireAuthenticatedUser(); }).MapCommentApi();
 
 
