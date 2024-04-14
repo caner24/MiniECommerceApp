@@ -23,6 +23,8 @@
     <li><strong>EF Core</strong>: Used for database operations.</li>
     <li><strong>MySQL</strong>: Used as the database.</li>
     <li><strong>DigitalOcean</strong>: Cloud provider used for hosting the project.</li>
+    <li><strong>AutoMapper</strong>: For mapping.</li>
+    <li><strong>ML.NET</strong>: For offensive product comments detect using ml.net model</li>
 </ul>
 
 ## Installation
