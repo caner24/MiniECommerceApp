@@ -44,6 +44,10 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
     });
 }
+else
+{
+    app.UseHsts();
+}
 
 await app.IsAdminUserExist();
 app.UseHttpsRedirection();
