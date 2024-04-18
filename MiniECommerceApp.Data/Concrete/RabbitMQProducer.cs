@@ -1,4 +1,5 @@
-﻿using MiniECommerceApp.Core.CrosssCuttingConcerns.MailService;
+﻿using Microsoft.Extensions.Hosting;
+using MiniECommerceApp.Core.CrosssCuttingConcerns.MailService;
 using MiniECommerceApp.Data.Abstract;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -12,9 +13,22 @@ namespace MiniECommerceApp.Data.Concrete
 {
     public class RabbitMQProducer : IMessageProducer
     {
+        private readonly IHostEnvironment _hostEnviroment;
+        public RabbitMQProducer(IHostEnvironment hostEnviroment)
+        {
+            _hostEnviroment = hostEnviroment;   
+        }
         public void SendMessage<T>(T message)
         {
-            var factory = new ConnectionFactory { HostName = "rabbitmq" };
+            var factory = new ConnectionFactory();
+            if (_hostEnviroment.IsDevelopment())
+            {
+                factory.HostName = "rabbitmq";
+            }
+            else
+            {
+                factory.Uri = new Uri("amqps://ozxugkhe:tthK-Ob7jRRDtdN5GhQZVVMAIn4uJk9i@sparrow.rmq.cloudamqp.com/ozxugkhe");
+            }
             using var connection = factory.CreateConnection();
             using var channel = connection.CreateModel();
             channel.QueueDeclare("tokens", durable: true, exclusive: false, autoDelete: false, arguments: null);

@@ -6,12 +6,11 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
+COPY ["MiniECommerceApp.WebApi/Media", "/app/Media"]
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["MiniECommerceApp.WebApi/Media", "/app/Media"]
 COPY ["MiniECommerceApp.WebApi/MiniECommerceApp.WebApi.csproj", "MiniECommerceApp.WebApi/"]
 COPY ["MiniECommerceApp.Application/MiniECommerceApp.Application.csproj", "MiniECommerceApp.Application/"]
 COPY ["MiniECommerceApp.Data/MiniECommerceApp.Data.csproj", "MiniECommerceApp.Data/"]

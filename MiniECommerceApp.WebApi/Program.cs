@@ -47,6 +47,7 @@ if (app.Environment.IsDevelopment())
 
 await app.IsAdminUserExist();
 app.UseHttpsRedirection();
+
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(

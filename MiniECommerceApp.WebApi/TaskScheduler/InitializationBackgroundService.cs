@@ -14,17 +14,27 @@ namespace MiniECommerceApp.WebApi.TaskScheduler
 {
     public class InitializationBackgroundService : IHostedService
     {
+        private readonly IHostEnvironment _hostEnviroment;
         private readonly IEmailSender _emailSender;
         private IModel _channel;
 
-        public InitializationBackgroundService(IEmailSender emailSender)
+        public InitializationBackgroundService(IHostEnvironment hostEnviroment, IEmailSender emailSender)
         {
+            _hostEnviroment = hostEnviroment;
             _emailSender = emailSender;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            var factory = new ConnectionFactory { HostName = "rabbitmq" };
+            var factory = new ConnectionFactory();
+            if (_hostEnviroment.IsDevelopment())
+            {
+                factory.HostName = "rabbitmq";
+            }
+            else
+            {
+                factory.Uri=new Uri("amqps://ozxugkhe:tthK-Ob7jRRDtdN5GhQZVVMAIn4uJk9i@sparrow.rmq.cloudamqp.com/ozxugkhe");
+            }
             var connection = factory.CreateConnection();
             _channel = connection.CreateModel();
 
