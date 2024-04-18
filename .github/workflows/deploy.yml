@@ -1,45 +1,40 @@
-name: Build & Deploy
+name: Build and Deploy Docker Image
 
-on:
-  push:
-    branches: [ "master" ]
-
-  pull_request:
-    branches: [ "master" ]
+on: [pull_request]
 
 jobs:
-  build-and-deploy:
+  build_and_deploy:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [20.x]
-
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm run test --if-present
+    - name: Check out repository
+      uses: actions/checkout@v4
 
-      - uses: a7ul/tar-action@v1.1.0
-        with:
-          command: c
-          cwd: "./"
-          files: |
-            backend/
-            frontend/dist/
-            captain-definition
-          outPath: deploy.tar
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
-      - name: Deploy App to CapRover
-        uses: caprover/deploy-from-github@v1.0.1
-        with:
-          server: 'https://my-amazing-app.rootoverdemo-can.caneraycelep.social'
-          app: 'CAPROVER_SERVER'
-          token: '18a7d5b4fc98c9512fd5a80f7230717b1c2cb80b0e3a400c22ab4021d699bcb6'
+    - name: Login to Container Registry
+      uses: docker/login-action@v3
+      with:
+            registry: ghcr.io
+            username: ${{ caner24 }}
+            password: ${{ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDD1qbkL7szySnSN2CeI+Kj77H1AkTonZW6Shd91H8aLIfJ17yYk623ILMFjBpHGTsrhrTnXXmHB6suHXV+a48zvAowh80jclBkOOgaJrjCh33MxqylpLCabJ43OVurXbysfIo2Q3yCVbDCHEFsc0okxOSCzY0mDXfEg9gJoZ9cBm++G59vWuGkIJf0m1Hd2gm/i7gxlgEklJA3jnpGb/Ewh15kLtHf5Gn2KrbCKArM3Sc2ls+mg/yyH71z4jp0rymSIKtB3sPcnmrqVu/6MT06cAwhhrnoQejwmTqnAbrDX/pI7w7iSEFSRtXpNe4YftBJyHRPlNXhhzbkBB1/FVutYmqVnWZG8drf49fh/ryyMzRmjCC4/c7tg89FBnPfz0MAJobZXLxijcyWl3RJT2JIzuL7fKJJGbVGw6rTRVmpyCwecY06Blq9LgBoHzeKeeW0OeDiXPX5O+Z1EYuDdKLEbVhxvSwHYEcfI7EohLEywJHvkL7mSIIPxy3IMC+mwwOsgtoKRtIKjljD4lrIEHDi5pjVKn6tRpFTreMACGrCWdF7hcmFbiRsSUMvGQr+MthNI3xJDf94VAxI3rCvoQjWysZ0FMccFzWJoqWuR0etKQflAUv/RKqqvVRAr7wIt3P5+QPvHfio3xflYI4mlDvLrMbxkrctkRXB/hRaT8Cs1Q== cnr24@Caner }}
+
+    - name: Preset Image Name
+      run: echo "IMAGE_URL=$(echo ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:$(echo ${{ github.sha }} | cut -c1-7) | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+    - name: Build and push Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: ${{ env.IMAGE_URL }}
+
+    - name: Deploy Image to CapRrover
+      uses: caprover/deploy-from-github@v1.1.2
+      with:
+        server: "${{ secrets.CAPROVER_SERVER }}"
+        app: "${{ secrets.APP_NAME }}"
+        token: "${{ secrets.APP_TOKEN }}"
+        image: ${{ env.IMAGE_URL }}
