@@ -1,11 +1,15 @@
 name: Build and Deploy Docker Image
 
-on: [pull_request]
+on:
+  push:
+    branches: [ "master" ]
+
+  pull_request:
+    branches: [ "master" ]
 
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-
     steps:
     - name: Check out repository
       uses: actions/checkout@v4
@@ -17,8 +21,8 @@ jobs:
       uses: docker/login-action@v3
       with:
             registry: ghcr.io
-            username: ${{ caner24 }}
-            password: ${{ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDD1qbkL7szySnSN2CeI+Kj77H1AkTonZW6Shd91H8aLIfJ17yYk623ILMFjBpHGTsrhrTnXXmHB6suHXV+a48zvAowh80jclBkOOgaJrjCh33MxqylpLCabJ43OVurXbysfIo2Q3yCVbDCHEFsc0okxOSCzY0mDXfEg9gJoZ9cBm++G59vWuGkIJf0m1Hd2gm/i7gxlgEklJA3jnpGb/Ewh15kLtHf5Gn2KrbCKArM3Sc2ls+mg/yyH71z4jp0rymSIKtB3sPcnmrqVu/6MT06cAwhhrnoQejwmTqnAbrDX/pI7w7iSEFSRtXpNe4YftBJyHRPlNXhhzbkBB1/FVutYmqVnWZG8drf49fh/ryyMzRmjCC4/c7tg89FBnPfz0MAJobZXLxijcyWl3RJT2JIzuL7fKJJGbVGw6rTRVmpyCwecY06Blq9LgBoHzeKeeW0OeDiXPX5O+Z1EYuDdKLEbVhxvSwHYEcfI7EohLEywJHvkL7mSIIPxy3IMC+mwwOsgtoKRtIKjljD4lrIEHDi5pjVKn6tRpFTreMACGrCWdF7hcmFbiRsSUMvGQr+MthNI3xJDf94VAxI3rCvoQjWysZ0FMccFzWJoqWuR0etKQflAUv/RKqqvVRAr7wIt3P5+QPvHfio3xflYI4mlDvLrMbxkrctkRXB/hRaT8Cs1Q== cnr24@Caner }}
+            username: ${{ github.repository_owner }}
+            password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Preset Image Name
       run: echo "IMAGE_URL=$(echo ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:$(echo ${{ github.sha }} | cut -c1-7) | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
