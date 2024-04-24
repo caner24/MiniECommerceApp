@@ -54,17 +54,20 @@ private static async Task<IResult> GetAllProduct([FromServices] RedisCacheServic
         return Results.NotFound("No products found.");
     }
 
-    var metadataExisting = new
-    {
-        cachedData.TotalCount,
-        cachedData.PageSize,
-        cachedData.CurrentPage,
-        cachedData.TotalPages,
-        cachedData.HasNext,
-        cachedData.HasPrevious
-    };
-    context.Response.Headers.Add("X-Pagination", metadataExisting);
-    return Results.Ok(cachedData);
+    var cachedDataJson = JsonConvert.DeserializeObject<PagedList<MiniECommerceApp.Entity.Models.Entity>>(cachedData);
+
+var metadataExisting = new
+{
+    TotalCount = cachedDataJson.TotalCount,
+    PageSize = cachedDataJson.PageSize,
+    CurrentPage = cachedDataJson.CurrentPage,
+    TotalPages = cachedDataJson.TotalPages,
+    HasNext = cachedDataJson.HasNext,
+    HasPrevious = cachedDataJson.HasPrevious
+};
+
+context.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadataExisting));
+return Results.Ok(cachedData);
 }
 
 
