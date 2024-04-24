@@ -32,24 +32,31 @@ namespace MiniECommerceApp.WebApi.MapGroups
         }
         private static async Task<IResult> GetAllProduct([FromServices] RedisCacheService cache, HttpContext context, IMediator mediator, [AsParameters] GetAllProductQueryRequest getAllProductQueryRequest)
         {
-            var cachedData = cache.GetCachedData<PagedList<MiniECommerceApp.Entity.Models.Entity>>("productCache");
-            if (cachedData is null)
-            {
-                var response = await mediator.Send(getAllProductQueryRequest);
-                var metadata = new
-                {
-                    response.TotalCount,
-                    response.PageSize,
-                    response.CurrentPage,
-                    response.TotalPages,
-                    response.HasNext,
-                    response.HasPrevious
-                };
-                context.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
-                cache.SetCachedData("productCache", response, TimeSpan.FromSeconds(60));
-                return Results.Ok(response);
-            }
-            return Results.Ok(cachedData);
+    var cachedData = cache.GetCachedData<CachedProductData>("productCache");
+
+    if (cachedData is null)
+    {
+        var response = await mediator.Send(getAllProductQueryRequest);
+        var metadata = new
+        {
+            response.TotalCount,
+            response.PageSize,
+            response.CurrentPage,
+            response.TotalPages,
+            response.HasNext,
+            response.HasPrevious
+        };
+        context.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+        cache.SetCachedData("productCache", new CachedProductData { Response = response, Pagination = metadata }, TimeSpan.FromSeconds(60));
+
+        return Results.Ok(response);
+    }
+
+    // Set the X-Pagination header from cached data
+    context.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(cachedData.Pagination));
+
+    return Results.Ok(cachedData.Response);
         }
 
         private static async Task<IResult> GetAllCategories([FromServices] ICategoryDal categoryDal)
