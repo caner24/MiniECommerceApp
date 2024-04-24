@@ -63,7 +63,7 @@ private static async Task<IResult> GetAllProduct([FromServices] RedisCacheServic
         cachedData.HasNext,
         cachedData.HasPrevious
     };
-    context.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadataExisting));
+    context.Response.Headers.Add("X-Pagination", metadataExisting);
     return Results.Ok(cachedData);
 }
 
