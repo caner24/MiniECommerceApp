@@ -30,26 +30,42 @@ namespace MiniECommerceApp.WebApi.MapGroups
 
             endpointRouteBuilder.MapGet("/getProductById/{id}", GetProductById);
         }
-        private static async Task<IResult> GetAllProduct([FromServices] RedisCacheService cache, HttpContext context, IMediator mediator, [AsParameters] GetAllProductQueryRequest getAllProductQueryRequest)
+private static async Task<IResult> GetAllProduct([FromServices] RedisCacheService cache, HttpContext context, IMediator mediator, [AsParameters] GetAllProductQueryRequest getAllProductQueryRequest)
+{
+    var cachedData = cache?.GetCachedData<PagedList<MiniECommerceApp.Entity.Models.Entity>>("productCache");
+    if (cachedData is null)
+    {
+        var response = await mediator?.Send(getAllProductQueryRequest);
+        if (response != null)
         {
-            var cachedData = cache.GetCachedData<PagedList<MiniECommerceApp.Entity.Models.Entity>>("productCache");
-            if (cachedData is null)
-            {
-                var response = await mediator.Send(getAllProductQueryRequest);
-                cache.SetCachedData("productCache", response, TimeSpan.FromSeconds(60));
-            }
+            cache?.SetCachedData("productCache", response, TimeSpan.FromSeconds(60));
             var metadata = new
             {
-                cachedData.TotalCount,
-                cachedData.PageSize,
-                cachedData.CurrentPage,
-                cachedData.TotalPages,
-                cachedData.HasNext,
-                cachedData.HasPrevious
+                response.TotalCount,
+                response.PageSize,
+                response.CurrentPage,
+                response.TotalPages,
+                response.HasNext,
+                response.HasPrevious
             };
             context.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
-            return Results.Ok(cachedData);
+            return Results.Ok(response);
         }
+        return Results.NotFound("No products found.");
+    }
+
+    var metadataExisting = new
+    {
+        cachedData.TotalCount,
+        cachedData.PageSize,
+        cachedData.CurrentPage,
+        cachedData.TotalPages,
+        cachedData.HasNext,
+        cachedData.HasPrevious
+    };
+    context.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadataExisting));
+    return Results.Ok(cachedData);
+}
 
 
         private static async Task<IResult> GetAllCategories([FromServices] ICategoryDal categoryDal)
