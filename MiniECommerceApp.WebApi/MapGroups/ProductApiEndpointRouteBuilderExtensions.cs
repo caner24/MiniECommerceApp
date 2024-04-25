@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -30,27 +30,46 @@ namespace MiniECommerceApp.WebApi.MapGroups
 
             endpointRouteBuilder.MapGet("/getProductById/{id}", GetProductById);
         }
-        private static async Task<IResult> GetAllProduct([FromServices] RedisCacheService cache, HttpContext context, IMediator mediator, [AsParameters] GetAllProductQueryRequest getAllProductQueryRequest)
+private static async Task<IResult> GetAllProduct([FromServices] RedisCacheService cache, HttpContext context, IMediator mediator, [AsParameters] GetAllProductQueryRequest getAllProductQueryRequest)
+{
+    var cachedData = cache?.GetCachedData<PagedList<MiniECommerceApp.Entity.Models.Entity>>("productCache");
+    if (cachedData is null)
+    {
+        var response = await mediator?.Send(getAllProductQueryRequest);
+        if (response != null)
         {
-            var cachedData = cache.GetCachedData<PagedList<MiniECommerceApp.Entity.Models.Entity>>("productCache");
-            if (cachedData is null)
+            cache?.SetCachedData("productCache", response, TimeSpan.FromSeconds(60));
+            var metadata = new
             {
-                var response = await mediator.Send(getAllProductQueryRequest);
-                var metadata = new
-                {
-                    response.TotalCount,
-                    response.PageSize,
-                    response.CurrentPage,
-                    response.TotalPages,
-                    response.HasNext,
-                    response.HasPrevious
-                };
-                context.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
-                cache.SetCachedData("productCache", response, TimeSpan.FromSeconds(60));
-                return Results.Ok(response);
-            }
-            return Results.Ok(cachedData);
+                response.TotalCount,
+                response.PageSize,
+                response.CurrentPage,
+                response.TotalPages,
+                response.HasNext,
+                response.HasPrevious
+            };
+            context.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Results.Ok(response);
         }
+        return Results.NotFound("No products found.");
+    }
+
+    var cachedDataJson = JsonConvert.DeserializeObject<PagedList<MiniECommerceApp.Entity.Models.Entity>>(cachedData);
+
+var metadataExisting = new
+{
+    TotalCount = cachedDataJson.TotalCount,
+    PageSize = cachedDataJson.PageSize,
+    CurrentPage = cachedDataJson.CurrentPage,
+    TotalPages = cachedDataJson.TotalPages,
+    HasNext = cachedDataJson.HasNext,
+    HasPrevious = cachedDataJson.HasPrevious
+};
+
+context.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadataExisting));
+return Results.Ok(cachedData);
+}
+
 
         private static async Task<IResult> GetAllCategories([FromServices] ICategoryDal categoryDal)
         {
