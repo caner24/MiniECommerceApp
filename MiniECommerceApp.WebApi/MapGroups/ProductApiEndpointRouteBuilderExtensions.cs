@@ -32,7 +32,8 @@ namespace MiniECommerceApp.WebApi.MapGroups
         }
         private static async Task<IResult> GetAllProduct([FromServices] RedisCacheService cache, HttpContext context, IMediator mediator, [AsParameters] GetAllProductQueryRequest getAllProductQueryRequest)
         {
-            var cachedData = cache?.GetCachedData<PagedList<MiniECommerceApp.Entity.Models.Entity>>("productCache");
+            string cacheKey = $"productCache_{JsonConvert.SerializeObject(getAllProductQueryRequest)}";
+            var cachedData = cache?.GetCachedData<PagedList<Entity.Models.Entity>>(cacheKey);
             var cachedHeader = cache?.GetCachedData<PagedData>("headerCache");
             if (cachedData is null)
             {
@@ -48,7 +49,7 @@ namespace MiniECommerceApp.WebApi.MapGroups
                         HasNext = response.HasNext,
                         HasPrevious = response.HasPrevious
                     };
-                    cache?.SetCachedData("productCache", response, TimeSpan.FromSeconds(60));
+                    cache?.SetCachedData(cacheKey, response, TimeSpan.FromSeconds(60));
                     cache?.SetCachedData("headerCache", metadataResponse, TimeSpan.FromSeconds(60));
                     context.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadataResponse));
                     return Results.Ok(response);

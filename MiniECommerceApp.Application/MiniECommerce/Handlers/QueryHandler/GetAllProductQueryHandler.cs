@@ -31,6 +31,7 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.QueryHandler
 
             var products = _productDal.GetAll();
             SearchByName(ref products, request.Name);
+            SearchByCategories(ref products, request.Categories);
             var sortedOwners = _sortHelper.ApplySort(products, request.OrderBy);
             var shapedOwners = _dataShaper.ShapeData(sortedOwners, request.Fields);
 
@@ -49,6 +50,16 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.QueryHandler
 
             owners = owners.Where(o => o.ProductName == productName);
         }
+        private void SearchByCategories(ref IQueryable<Product> owners, string categoryName)
+        {
+            if (!owners.Any() || string.IsNullOrWhiteSpace(categoryName))
+                return;
 
+            if (string.IsNullOrEmpty(categoryName))
+                return;
+
+            owners = owners.Where(o => o.Categories.Any(x => x.CategoryName == categoryName));
+
+        }
     }
 }

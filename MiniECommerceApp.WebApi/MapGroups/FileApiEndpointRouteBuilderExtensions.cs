@@ -34,6 +34,8 @@ namespace MiniECommerceApp.WebApi.MapGroups
                 var folder = Path.Combine(Directory.GetCurrentDirectory(), "Media");
                 if (!Directory.Exists(folder))
                     Directory.CreateDirectory(folder);
+
+                product.ProductPhotos.Clear();
                 foreach (var item in formFileCollection)
                 {
                     var path = Path.Combine(folder, item?.FileName);

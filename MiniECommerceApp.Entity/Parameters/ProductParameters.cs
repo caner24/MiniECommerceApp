@@ -13,5 +13,7 @@ namespace MiniECommerceApp.Entity.Parameters
             OrderBy = "Id";
         }
         public string? Name { get; set; }
+
+        public string? Categories { get; set; }
     }
 }
