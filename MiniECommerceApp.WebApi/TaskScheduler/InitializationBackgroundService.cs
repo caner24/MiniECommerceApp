@@ -33,7 +33,7 @@ namespace MiniECommerceApp.WebApi.TaskScheduler
             }
             else
             {
-                factory.Uri=new Uri("amqps://ozxugkhe:tthK-Ob7jRRDtdN5GhQZVVMAIn4uJk9i@sparrow.rmq.cloudamqp.com/ozxugkhe");
+                factory.Uri = new Uri("amqps://ozxugkhe:tthK-Ob7jRRDtdN5GhQZVVMAIn4uJk9i@sparrow.rmq.cloudamqp.com/ozxugkhe");
             }
             var connection = factory.CreateConnection();
             _channel = connection.CreateModel();
@@ -47,7 +47,13 @@ namespace MiniECommerceApp.WebApi.TaskScheduler
                 var body = eventArgs.Body;
                 var jsonString = Encoding.UTF8.GetString(body.ToArray());
                 var message = JsonConvert.DeserializeObject<MailModel>(jsonString);
-                var messageSender = new Message(new string[] { message.Email }, message.Header, MailConfirmationModel.EmailConfirmationModel(message.Email.Substring(0, message.Email.IndexOf("@")), "Email Onaylama", "2 hour", message.ConfLink.ToString()), null);
+                var mailConfModel = message.Type switch
+                {
+                    0 => MailConfirmationModel.EmailConfirmationModel(message.Email.Substring(0, message.Email.IndexOf("@")), "Email Onaylama", "2 hour", message.ConfLink.ToString()),
+                    1 => MailConfirmationModel.PasswordResetModel(message.Email.Substring(0, message.Email.IndexOf("@")), "Şifre Sıfırlama", "2 hour", message.ConfLink.ToString()),
+                    2 => MailConfirmationModel.EmailConfirmationModel(message.Email.Substring(0, message.Email.IndexOf("@")), "Şifre Sıfırlama Linki", "2 hour", message.ConfLink.ToString())
+                };
+                var messageSender = new Message(new string[] { message.Email }, message.Header, mailConfModel, null);
                 await _emailSender.SendEmailAsync(messageSender);
                 _channel.BasicAck(eventArgs.DeliveryTag, multiple: false);
             };

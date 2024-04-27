@@ -17,19 +17,19 @@ namespace MiniECommerceApp.WebApi.Mail
         }
         public async Task SendConfirmationLinkAsync(User user, string email, string confirmationLink)
         {
-            var model = new MailModel { Email = email, Header = "E-Posta Adresinizi Doğrulayın", ConfLink = confirmationLink };
+            var model = new MailModel { Email = email, Header = "E-Posta Adresinizi Doğrulayın", ConfLink = confirmationLink,Type=0 };
             await Task.Run(() => _messageProducer.SendMessage(model));
         }
 
         public async Task SendPasswordResetCodeAsync(User user, string email, string resetCode)
         {
-            var model = new MailModel { Email = email, Header = "Şifre sıfırlama kodu", ConfLink = resetCode };
+            var model = new MailModel { Email = email, Header = "Şifre sıfırlama kodu", ConfLink = resetCode, Type = 1 };
             await Task.Run(() => _messageProducer.SendMessage(model));
         }
 
         public async Task SendPasswordResetLinkAsync(User user, string email, string resetLink)
         {
-            var model = new MailModel { Email = email, Header = "Şifre sıfırlama linki", ConfLink = resetLink };
+            var model = new MailModel { Email = email, Header = "Şifre sıfırlama linki", ConfLink = resetLink, Type = 2 };
             await Task.Run(() => _messageProducer.SendMessage(model));
         }
     }

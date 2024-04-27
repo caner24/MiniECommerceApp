@@ -134,7 +134,14 @@ namespace MiniECommerceApp.WebApi.Extensions
         public static void FluentValidationRegister(this IServiceCollection services)
         {
             services.AddScoped<IValidator<AddCommentsToProductDto>, CommentValidator>();
-
+            services.AddScoped<IValidator<AddProductDto>, AddProductValidator>();
+            services.AddScoped<IValidator<AddCategoryDto>, AddCategoryValidator>();
+            services.AddScoped<IValidator<AddProductToBasketDto>, AddProductToBasketValidator>();
+            services.AddScoped<IValidator<DeleteCategoryDto>, DeleteCategoryValidator>();
+            services.AddScoped<IValidator<DeleteProductDto>, DeleteProductValidator>();
+            services.AddScoped<IValidator<CreateInvoiceDto>, InvoiceValidator>();
+            services.AddScoped<IValidator<UpdateCategoryDto>, UpdateCategoryValidator>();
+            services.AddScoped<IValidator<UpdateProductDto>, UpdateProductValidator>();
         }
     }
 }
