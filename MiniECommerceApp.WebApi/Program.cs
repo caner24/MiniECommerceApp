@@ -13,6 +13,7 @@ using Prometheus;
 using MiniECommerceApp.WebApi.TaskScheduler;
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Services.IdentityConfiguration(builder.Configuration);
 builder.Services.SwaggerConfiguration();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
@@ -27,7 +28,7 @@ builder.Services.RedisCacheSettings(builder.Configuration);
 builder.Services.AddRateLimiting();
 builder.Services.AddHostedService<InitializationBackgroundService>();
 builder.Services.FluentValidationRegister();
-
+builder.Services.StripeOptions(builder.Configuration);
 
 JsonSerializerSettings serializerSettings = new JsonSerializerSettings
 {
@@ -68,7 +69,7 @@ app.MapGroup("/api/product").MapProductApi();
 app.MapGroup("/api/file").DisableAntiforgery().MapFileApi();
 app.MapGroup("/api/invoices").RequireAuthorization(x => { x.RequireAuthenticatedUser(); }).MapInvoicesApi();
 app.MapGroup("api/comments").RequireAuthorization(x => { x.RequireAuthenticatedUser(); }).MapCommentApi();
-
+app.MapGroup("api/stripe").MapStripeApi();
 
 #endregion
 app.UseHttpMetrics();

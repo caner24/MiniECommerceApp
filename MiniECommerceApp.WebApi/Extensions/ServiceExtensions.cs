@@ -11,7 +11,9 @@ using MiniECommerceApp.Data.Concrete;
 using MiniECommerceApp.Entity;
 using MiniECommerceApp.Entity.DTOs;
 using MiniECommerceApp.Entity.Helpers;
+using MiniECommerceApp.WebApi.Configuration;
 using MiniECommerceApp.WebApi.Mail;
+using Stripe;
 using System.Threading.RateLimiting;
 
 namespace MiniECommerceApp.WebApi.Extensions
@@ -78,8 +80,8 @@ namespace MiniECommerceApp.WebApi.Extensions
             services.AddScoped<IInvoicesDal, InvoiceDal>();
 
             services.AddSingleton<IMessageProducer, RabbitMQProducer>();
-            services.AddScoped<ISortHelper<Product>, SortHelper<Product>>();
-            services.AddScoped<IDataShaper<Product>, DataShaper<Product>>();
+            services.AddScoped<ISortHelper<MiniECommerceApp.Entity.Product>, SortHelper<MiniECommerceApp.Entity.Product>>();
+            services.AddScoped<IDataShaper<MiniECommerceApp.Entity.Product>, DataShaper<MiniECommerceApp.Entity.Product>>();
 
             var emailConfig = configuration
          .GetSection("EmailConfiguration")
@@ -142,6 +144,27 @@ namespace MiniECommerceApp.WebApi.Extensions
             services.AddScoped<IValidator<CreateInvoiceDto>, InvoiceValidator>();
             services.AddScoped<IValidator<UpdateCategoryDto>, UpdateCategoryValidator>();
             services.AddScoped<IValidator<UpdateProductDto>, UpdateProductValidator>();
+        }
+
+        public static void StripeOptions(this IServiceCollection services, IConfiguration config)
+        {
+            StripeConfiguration.ApiKey = config["STRIPE_SECRET_KEY"];
+
+            StripeConfiguration.AppInfo = new AppInfo
+            {
+                Name = "stripe-samples/accept-a-payment/payment-element",
+                Url = "https://github.com/stripe-samples",
+                Version = "0.1.0",
+            };
+
+            StripeConfiguration.ApiKey = config["Stripe:STRIPE_SECRET_KEY"];
+
+            services.Configure<StripeOptions>(options =>
+            {
+                options.PublishableKey = config["Stripe:STRIPE_PUBLISHABLE_KEY"];
+                options.SecretKey = config["Stripe:STRIPE_SECRET_KEY"];
+                options.WebhookSecret = config["Stripe:STRIPE_WEBHOOK_SECRET"];
+            });
         }
     }
 }
