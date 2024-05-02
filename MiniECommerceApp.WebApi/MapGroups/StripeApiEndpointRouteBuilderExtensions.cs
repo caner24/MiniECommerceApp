@@ -15,18 +15,14 @@ namespace MiniECommerceApp.WebApi.MapGroups
                 try
                 {
                     long orderAmount = 1400;
-
                     var service = new PaymentIntentService();
                     PaymentIntent paymentIntent = default;
-
-
                     paymentIntent = await service.CreateAsync(new PaymentIntentCreateOptions
                     {
                         Amount = orderAmount,
                         Currency = "USD",
                         AutomaticPaymentMethods = new() { Enabled = true }
                     });
-
 
                     return Results.Ok(new { paymentIntent.ClientSecret });
                 }

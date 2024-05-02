@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using MiniECommerceApp.Application.MiniECommerce.Commands.Request;
 using MiniECommerceApp.Application.Validation.FluentValidation;
 using MiniECommerceApp.Core.CrosssCuttingConcerns.Caching;
 using MiniECommerceApp.Core.CrosssCuttingConcerns.MailService;
@@ -144,6 +145,7 @@ namespace MiniECommerceApp.WebApi.Extensions
             services.AddScoped<IValidator<CreateInvoiceDto>, InvoiceValidator>();
             services.AddScoped<IValidator<UpdateCategoryDto>, UpdateCategoryValidator>();
             services.AddScoped<IValidator<UpdateProductDto>, UpdateProductValidator>();
+            services.AddScoped<IValidator<AddProductToBasketCommandRequest>, AddProductToBasketValidator>();
         }
 
         public static void StripeOptions(this IServiceCollection services, IConfiguration config)

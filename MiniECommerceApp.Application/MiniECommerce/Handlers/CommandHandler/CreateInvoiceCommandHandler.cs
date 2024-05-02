@@ -45,13 +45,13 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
                     if (product is not null)
                     {
                         invoices.Product.Add(product);
-                        if (product.ProductDetail.Amount < request.Amount[i])
+                        if (product.Amount < request.Amount[i])
                             throw new NotEnoughtAmountException();
 
 
-                        var newAmount = product.ProductDetail.Amount - request.Amount[i];
+                        var newAmount = product.Amount - request.Amount[i];
 
-                        product.ProductDetail.Amount = newAmount;
+                        product.Amount = newAmount;
                         lineTotal += (int)(product.ProductPrice * request.Amount[i]);
                         await _productDal.UpdateAsync(product);
                     }

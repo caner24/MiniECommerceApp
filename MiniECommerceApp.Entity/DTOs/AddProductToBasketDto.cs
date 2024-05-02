@@ -11,7 +11,8 @@ namespace MiniECommerceApp.Entity.DTOs
     {
         public string UserId { get; init; }
 
-        public List<int> ProdId { get; init; }
+        public int ProdId { get; init; }
 
+        public int Amount { get; init; }
     }
 }

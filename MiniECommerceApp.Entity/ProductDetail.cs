@@ -10,9 +10,9 @@ namespace MiniECommerceApp.Entity
 {
     public class ProductDetail : IEntity
     {
-        public int Amount { get; set; }
         public Size Size { get; set; }
         public int ProductId { get; set; }
+        public string ProductDetailText { get; set; }
         public Product Product { get; set; }
     }
 }

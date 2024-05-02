@@ -18,9 +18,11 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
     public class AddCommentsToProductCommandHandler : IRequestHandler<AddComentsToProductCommandRequest, AddCommentsToProductResponse>
     {
         private readonly IProductDal _productDal;
+        private readonly IInvoicesDal _invoiceDal;
         private readonly MiniECommerceContext _miniECommerceContext;
-        public AddCommentsToProductCommandHandler(IProductDal productDal, MiniECommerceContext context)
+        public AddCommentsToProductCommandHandler(IProductDal productDal, IInvoicesDal invoiceDal, MiniECommerceContext context)
         {
+            _invoiceDal = invoiceDal;
             _productDal = productDal;
             _miniECommerceContext = context;
         }
@@ -33,6 +35,9 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
             var user = await _miniECommerceContext.Set<User>().Where(x => x.UserName == request.UserId).FirstOrDefaultAsync();
             if (user == null)
                 throw new UserNotFoundExcepiton();
+
+            if (_invoiceDal.Get(x => x.UserId == user.Id).Include(x=>x.Product).Where(x=>x.Product.Contains(product)).FirstOrDefault()==null)
+                throw new Exception("Ürüne yorum yapmak için satın almanız gerekmektedir");
 
             var sampleData = new OffensiveMLModel.ModelInput()
             {

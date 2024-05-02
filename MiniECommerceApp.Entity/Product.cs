@@ -19,6 +19,7 @@ namespace MiniECommerceApp.Entity
         public int Id { get; set; }
         public string ProductName { get; set; }
         public double ProductPrice { get; set; }
+        public int Amount { get; set; }
         public byte[] ConcurrencyToken { get; set; }
         public ProductDetail ProductDetail { get; set; }
         public List<Category> Categories { get; set; }

@@ -1,17 +1,9 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
 using MiniECommerceApp.Application.MiniECommerce.Queries.Request;
-using MiniECommerceApp.Application.MiniECommerce.Queries.Response;
 using MiniECommerceApp.Data.Abstract;
 using MiniECommerceApp.Entity;
 using MiniECommerceApp.Entity.Helpers;
-using MiniECommerceApp.Entity.Models;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace MiniECommerceApp.Application.MiniECommerce.Handlers.QueryHandler
 {

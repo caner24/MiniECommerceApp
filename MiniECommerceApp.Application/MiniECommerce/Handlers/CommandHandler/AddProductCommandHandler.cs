@@ -38,7 +38,7 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
                         product.Categories.Add(isCategoryExist);
                     }
                 }
-                product.ProductDetail = new ProductDetail { Amount = request.Amount, Size = request.Size };
+                product.ProductDetail = new ProductDetail { Size = request.Size };
                 var addedProduct = await _productDal.AddAsync(product);
                 if (addedProduct is not null)
                 {

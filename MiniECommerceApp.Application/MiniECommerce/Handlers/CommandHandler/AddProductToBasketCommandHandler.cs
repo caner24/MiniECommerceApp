@@ -27,29 +27,43 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
         }
         public async Task<AddProductToBasketCommandResponse> Handle(AddProductToBasketCommandRequest request, CancellationToken cancellationToken)
         {
-            var basket = await _basketDal.GetAll().Include(x => x.User).Where(x => x.User.UserName == request.UserId).FirstOrDefaultAsync();
-            if (basket.Products is null)
+            var basket = await _basketDal.GetAll().Include(x => x.User).Where(x => x.User.Email == request.UserId).FirstOrDefaultAsync();
+            if (basket.Products.Count == 0)
             {
-                var newBasket = new Basket { UserId = request.UserId, Products = new List<Product>() };
-                foreach (var item in request.ProdId)
+                var products = await _productDal.Get(x => x.Id == request.ProdId).AsNoTracking().FirstOrDefaultAsync();
+                if (products is not null)
                 {
-                    var products = await _productDal.Get(x => x.Id == item).FirstOrDefaultAsync();
-                    if (products is not null)
-                        newBasket.Products.Add(products);
+                    products.Amount = request.Amount;
+                    basket.Products.Add(products);
                 }
-                var addedBasket = await _basketDal.AddAsync(newBasket);
-                return new AddProductToBasketCommandResponse { Basket = newBasket, IsBaketAdded = true };
+                if (basket.UserId != null)
+                {
+                    await _basketDal.UpdateAsync(basket);
+                    return new AddProductToBasketCommandResponse { Basket = basket, IsBaketAdded = true };
+                }
+
+                var addedBaskets = await _basketDal.AddAsync(basket);
+                return new AddProductToBasketCommandResponse { Basket = basket, IsBaketAdded = true };
             }
             else
             {
-                foreach (var item in request.ProdId)
+
+                var products = await _productDal.Get(x => x.Id == request.ProdId).FirstOrDefaultAsync();
+                if (products is not null)
                 {
-                    var products = await _productDal.Get(x => x.Id == item).FirstOrDefaultAsync();
-                    if (products is not null)
+
+                    if (products.Id == request.ProdId)
+                    {
+                        basket.Products.Where(x => x.Id == request.ProdId).FirstOrDefault().Amount += request.Amount;
+                    }
+                    else
+                    {
                         basket.Products.Add(products);
+                    }
                 }
-                var addedBasket = await _basketDal.UpdateAsync(basket);
+
             }
+            var addedBasket = await _basketDal.UpdateAsync(basket);
 
             return new AddProductToBasketCommandResponse { Basket = basket, IsBaketAdded = true };
         }
