@@ -50,8 +50,8 @@ namespace MiniECommerceApp.WebApi.Extensions
                             factory: partition => new FixedWindowRateLimiterOptions
                             {
                                 AutoReplenishment = true,
-                                PermitLimit = 50,
-                                QueueLimit = 10,
+                                PermitLimit = 100,
+                                QueueLimit = 50,
                                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                                 Window = TimeSpan.FromMinutes(1)
                             }));
