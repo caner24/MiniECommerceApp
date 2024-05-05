@@ -25,7 +25,7 @@ builder.Services.ConfigureCors();
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddAntiforgery();
 builder.Services.RedisCacheSettings(builder.Configuration);
-builder.Services.AddRateLimiting();
+//builder.Services.AddRateLimiting();
 builder.Services.AddHostedService<InitializationBackgroundService>();
 builder.Services.FluentValidationRegister();
 builder.Services.StripeOptions(builder.Configuration);
