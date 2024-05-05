@@ -74,7 +74,7 @@ app.MapGroup("api/stripe").MapStripeApi();
 #endregion
 app.UseHttpMetrics();
 app.MapMetrics();
-app.UseRateLimiter();
+//app.UseRateLimiter();
 app.UseExceptionHandler();
 app.UseCors("CorsPolicy");
 app.UseAuthentication();
