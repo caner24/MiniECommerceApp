@@ -75,7 +75,7 @@ namespace MiniECommerceApp.Entity.MailBody
                 </table>
             </body>
             </html>""";
-            string formattedHtml = string.Format(htmlTemplate, username, header, link, exdate);
+            string formattedHtml = string.Format(htmlTemplate, username, header, $"https://www.caneraycelep.social/resetPassword/token={link}", exdate);
             return formattedHtml;
         }
     }
