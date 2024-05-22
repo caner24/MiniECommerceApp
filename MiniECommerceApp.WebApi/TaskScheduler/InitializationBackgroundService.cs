@@ -50,7 +50,7 @@ namespace MiniECommerceApp.WebApi.TaskScheduler
                 var mailConfModel = message.Type switch
                 {
                     0 => MailConfirmationModel.EmailConfirmationModel(message.Email.Substring(0, message.Email.IndexOf("@")), "Email Onaylama", "2 hour", message.ConfLink.ToString()),
-                    1 => MailConfirmationModel.PasswordResetModel(message.Email.Substring(0, message.Email.IndexOf("@")), "Şifre Sıfırlama", "2 hour", message.ConfLink.ToString()),
+                    1 => MailConfirmationModel.PasswordResetModel(message.Email.Substring(0, message.Email.IndexOf("@")), "Şifre Sıfırlama", "2 hour", message.ConfLink.ToString(), message.Email),
                     2 => MailConfirmationModel.EmailConfirmationModel(message.Email.Substring(0, message.Email.IndexOf("@")), "Şifre Sıfırlama Linki", "2 hour", message.ConfLink.ToString())
                 };
                 var messageSender = new Message(new string[] { message.Email }, message.Header, mailConfModel, null);

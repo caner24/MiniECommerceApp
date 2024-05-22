@@ -10,6 +10,7 @@ using MiniECommerceApp_Application;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,12 +20,12 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
     {
         private readonly IProductDal _productDal;
         private readonly IInvoicesDal _invoiceDal;
-        private readonly MiniECommerceContext _miniECommerceContext;
-        public AddCommentsToProductCommandHandler(IProductDal productDal, IInvoicesDal invoiceDal, MiniECommerceContext context)
+        private readonly ClaimsPrincipal _claimsPrincipal;
+        public AddCommentsToProductCommandHandler(IProductDal productDal, IInvoicesDal invoiceDal, ClaimsPrincipal claimsPrincipal)
         {
+            _claimsPrincipal = claimsPrincipal;
             _invoiceDal = invoiceDal;
             _productDal = productDal;
-            _miniECommerceContext = context;
         }
         public async Task<AddCommentsToProductResponse> Handle(AddComentsToProductCommandRequest request, CancellationToken cancellationToken)
         {
@@ -32,11 +33,11 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
             if (product == null)
                 throw new ProductNotFoundException();
 
-            var user = await _miniECommerceContext.Set<User>().Where(x => x.UserName == request.UserId).FirstOrDefaultAsync();
+            var user = _claimsPrincipal.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
             if (user == null)
                 throw new UserNotFoundExcepiton();
 
-            if (_invoiceDal.Get(x => x.UserId == user.Id).Include(x=>x.Product).Where(x=>x.Product.Contains(product)).FirstOrDefault()==null)
+            if (_invoiceDal.Get(x => x.UserId == user).Include(x => x.Product).Where(x => x.Product.Contains(product)).FirstOrDefault() == null)
                 throw new Exception("Ürüne yorum yapmak için satın almanız gerekmektedir");
 
             var sampleData = new OffensiveMLModel.ModelInput()
@@ -47,7 +48,7 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
             bool isValid = result.PredictedLabel == "0" ? true : false;
 
 
-            product.Comments.Add(new Entity.Comment { UserId = user.Id, CommentText = request.CommentText, IsValidComment = isValid });
+            product.Comments.Add(new Entity.Comment { UserId = user, CommentText = request.CommentText, IsValidComment = isValid });
             await _productDal.UpdateAsync(product);
             return new AddCommentsToProductResponse { IsCommentConfirmed = isValid };
         }

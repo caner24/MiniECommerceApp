@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -21,11 +22,13 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
         private readonly IInvoicesDal _invoceDal;
         private readonly IProductDal _productDal;
         private readonly MiniECommerceContext _context;
-        public CreateInvoiceCommandHandler(IInvoicesDal invoicesDal, IProductDal productDal, MiniECommerceContext context)
+        private readonly ClaimsPrincipal _claimsPrincipal;
+        public CreateInvoiceCommandHandler(IInvoicesDal invoicesDal, IProductDal productDal, MiniECommerceContext context, ClaimsPrincipal claimsPrincipal)
         {
             _context = context;
             _invoceDal = invoicesDal;
             _productDal = productDal;
+            _claimsPrincipal = claimsPrincipal; 
         }
         public async Task<CreateInvoiceCommandResponse> Handle(CreateInvoiceCommandRequest request, CancellationToken cancellationToken)
         {
@@ -33,11 +36,11 @@ namespace MiniECommerceApp.Application.MiniECommerce.Handlers.CommandHandler
 
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                var user = await _context.Set<User>().Where(x => x.UserName == request.UserId).FirstOrDefaultAsync();
+                var user = _claimsPrincipal.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
                 if (user is null)
                     throw new UserNotFoundExcepiton();
 
-                var invoices = new Invoice { UserId = user.Id, InvoiceNo = Guid.NewGuid() };
+                var invoices = new Invoice { UserId = user, InvoiceNo = Guid.NewGuid() };
 
                 for (int i = 0; i < request.ProductId.Count(); i++)
                 {

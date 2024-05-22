@@ -11,6 +11,8 @@ using Newtonsoft.Json;
 using System.Text.Json;
 using Prometheus;
 using MiniECommerceApp.WebApi.TaskScheduler;
+using Stripe;
+using System.Security.Claims;
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -25,6 +27,12 @@ builder.Services.ConfigureCors();
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddAntiforgery();
 builder.Services.RedisCacheSettings(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<ClaimsPrincipal>(provider =>
+{
+    var context = provider.GetService<IHttpContextAccessor>();
+    return context?.HttpContext?.User ?? new ClaimsPrincipal();
+});
 //builder.Services.AddRateLimiting();
 builder.Services.AddHostedService<InitializationBackgroundService>();
 builder.Services.FluentValidationRegister();

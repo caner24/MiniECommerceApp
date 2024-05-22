@@ -43,7 +43,7 @@ namespace MiniECommerceApp.Entity.MailBody
             string formattedHtml = string.Format(htmlTemplate, username, header, link, exdate);
             return formattedHtml;
         }
-        public static string PasswordResetModel(string username, string header, string exdate, string link)
+        public static string PasswordResetModel(string username, string header, string exdate, string link,string email)
         {
 
             var htmlTemplate = @"""
@@ -75,7 +75,7 @@ namespace MiniECommerceApp.Entity.MailBody
                 </table>
             </body>
             </html>""";
-            string formattedHtml = string.Format(htmlTemplate, username, header, $"https://www.caneraycelep.social/resetPassword/token={link}", exdate);
+            string formattedHtml = string.Format(htmlTemplate, username, header, $"https://www.caneraycelep.social/resetPassword/{email}/{link}", exdate);
             return formattedHtml;
         }
     }
