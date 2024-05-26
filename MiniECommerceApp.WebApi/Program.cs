@@ -15,7 +15,7 @@ using Stripe;
 using System.Security.Claims;
 var builder = WebApplication.CreateBuilder(args);
 
-
+builder.Configuration.AddUserSecrets<Program>().Build();
 builder.Services.IdentityConfiguration(builder.Configuration);
 builder.Services.SwaggerConfiguration();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
@@ -26,8 +26,9 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Loa
 builder.Services.ConfigureCors();
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddAntiforgery();
-builder.Services.RedisCacheSettings(builder.Configuration);
+builder.Services.RedisCacheSettings(builder.Configuration,builder.Environment);
 builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddTransient<ClaimsPrincipal>(provider =>
 {
     var context = provider.GetService<IHttpContextAccessor>();
@@ -45,7 +46,6 @@ JsonSerializerSettings serializerSettings = new JsonSerializerSettings
 };
 
 var app = builder.Build();
-
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {

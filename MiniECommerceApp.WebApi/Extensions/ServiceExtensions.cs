@@ -104,19 +104,25 @@ namespace MiniECommerceApp.WebApi.Extensions
             });
         }
 
-        public static void RedisCacheSettings(this IServiceCollection services, IConfiguration configuration)
+        public static void RedisCacheSettings(this IServiceCollection services, IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
+
             services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = configuration["Redis:DefaultConnection"];
-            });
+                    {
+                        options.Configuration = hostEnvironment.IsDevelopment()
+      ? "redis"
+      : configuration["Redis:DefaultConnection"];
+                    });
+
+
+
             services.AddSingleton<RedisCacheService>();
 
         }
 
         public static void IdentityConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("defaultConnection");
+            var connectionString = configuration["ConnectionStrings:defaultConnection"];
             ServerVersion serverVersion = ServerVersion.AutoDetect(connectionString);
             services.AddDbContext<MiniECommerceContext>(options => options.UseMySql(connectionString, serverVersion, b => b.MigrationsAssembly("MiniECommerceApp.WebApi")));
             services.AddIdentityApiEndpoints<User>(options =>

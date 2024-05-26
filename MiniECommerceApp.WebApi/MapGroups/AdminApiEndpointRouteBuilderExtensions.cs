@@ -3,7 +3,9 @@ using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using MiniECommerceApp.Application.MiniECommerce.Commands.Request;
+using MiniECommerceApp.Data.Abstract;
 using MiniECommerceApp.Entity.DTOs;
 
 namespace MiniECommerceApp.WebApi.MapGroups
@@ -20,6 +22,7 @@ namespace MiniECommerceApp.WebApi.MapGroups
             endpoints.MapPut("/updateProduct", UpdateProduct);
 
             // Category
+            endpoints.MapPut("/getAllCategories", GetAllCategories);
             endpoints.MapPost("/addCategory", AddCategory);
             endpoints.MapDelete("/deleteCategory/{id}", DeleteCategory);
             endpoints.MapPut("/updateCategory", UpdateCategory);
@@ -29,7 +32,13 @@ namespace MiniECommerceApp.WebApi.MapGroups
             return Results.Content($"<h2>Hi !. Welcome to the admin page </h2>", "text/html");
         }
 
-        private static async Task<IResult> AddProduct([FromServices]IValidator<AddProductDto> validator, [FromServices] IMediator mediator, [FromBody] AddProductCommandRequest addProductCommandRequest)
+        private async static Task<IResult> GetAllCategories([FromServices] ICategoryDal _categoryDal)
+        {
+            var categories = await _categoryDal.GetAll().ToListAsync();
+            return Results.Ok(categories);
+        }
+
+        private static async Task<IResult> AddProduct([FromServices] IValidator<AddProductDto> validator, [FromServices] IMediator mediator, [FromBody] AddProductCommandRequest addProductCommandRequest)
         {
             ValidationResult validationResult = await validator.ValidateAsync(addProductCommandRequest);
             if (!validationResult.IsValid)

@@ -1,5 +1,6 @@
 ﻿using MiniECommerceApp.Entity.Models;
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -67,7 +68,7 @@ namespace MiniECommerceApp.Entity.Helpers
                 shapedData.Add(shapedObject);
             }
 
-            return shapedData;
+            return shapedData.ToFrozenSet();
         }
 
         private MiniECommerceApp.Entity.Models.Entity FetchDataForEntity(T entity, IEnumerable<PropertyInfo> requiredProperties)

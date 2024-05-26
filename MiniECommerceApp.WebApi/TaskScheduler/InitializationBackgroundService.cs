@@ -16,6 +16,7 @@ namespace MiniECommerceApp.WebApi.TaskScheduler
     {
         private readonly IHostEnvironment _hostEnviroment;
         private readonly IEmailSender _emailSender;
+        private readonly IConfiguration _config;
         private IModel _channel;
 
         public InitializationBackgroundService(IHostEnvironment hostEnviroment, IEmailSender emailSender)
@@ -33,7 +34,7 @@ namespace MiniECommerceApp.WebApi.TaskScheduler
             }
             else
             {
-                factory.Uri = new Uri("amqps://ozxugkhe:tthK-Ob7jRRDtdN5GhQZVVMAIn4uJk9i@sparrow.rmq.cloudamqp.com/ozxugkhe");
+                factory.Uri = new Uri(_config["rabbitmq:defaultConnection"].ToString());
             }
             var connection = factory.CreateConnection();
             _channel = connection.CreateModel();
