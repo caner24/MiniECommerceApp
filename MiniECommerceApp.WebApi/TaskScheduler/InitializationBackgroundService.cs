@@ -14,15 +14,16 @@ namespace MiniECommerceApp.WebApi.TaskScheduler
 {
     public class InitializationBackgroundService : IHostedService
     {
-        private readonly IHostEnvironment _hostEnviroment;
         private readonly IEmailSender _emailSender;
         private readonly IConfiguration _config;
+        private readonly IHostEnvironment _hostEnviroment;
         private IModel _channel;
 
-        public InitializationBackgroundService(IHostEnvironment hostEnviroment, IEmailSender emailSender)
+        public InitializationBackgroundService(IEmailSender emailSender, IConfiguration config, IHostEnvironment hostEnviroment)
         {
-            _hostEnviroment = hostEnviroment;
             _emailSender = emailSender;
+            _config = config;
+            _hostEnviroment = hostEnviroment;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
