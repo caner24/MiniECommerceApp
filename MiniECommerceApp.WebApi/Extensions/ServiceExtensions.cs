@@ -99,7 +99,8 @@ namespace MiniECommerceApp.WebApi.Extensions
                     builder.AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
-                    .WithExposedHeaders("X-Pagination")
+                 .WithExposedHeaders(new[] { "X-Pagination", "Location" })
+
                 );
             });
         }
