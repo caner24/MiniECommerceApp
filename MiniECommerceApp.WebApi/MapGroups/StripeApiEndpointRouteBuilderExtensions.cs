@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using MiniECommerceApp.WebApi.Configuration;
 using Stripe;
+using Stripe.Checkout;
 
 namespace MiniECommerceApp.WebApi.MapGroups
 {
@@ -9,27 +10,30 @@ namespace MiniECommerceApp.WebApi.MapGroups
     {
         public static void MapStripeApi(this IEndpointRouteBuilder endpointRouteBuilder)
         {
-            endpointRouteBuilder.MapGet("/create-intent", async (IConfiguration configuration) =>
+            endpointRouteBuilder.MapPost("/create-checkout-session", async (HttpContext context,IConfiguration configuration) =>
             {
 
-                try
+                var domain = "https://www.caneraycelep.social";
+                var options = new SessionCreateOptions
                 {
-                    long orderAmount = 1400;
-                    var service = new PaymentIntentService();
-                    PaymentIntent paymentIntent = default;
-                    paymentIntent = await service.CreateAsync(new PaymentIntentCreateOptions
-                    {
-                        Amount = orderAmount,
-                        Currency = "USD",
-                        AutomaticPaymentMethods = new() { Enabled = true }
-                    });
+                    LineItems = new List<SessionLineItemOptions>
+                {
+                  new SessionLineItemOptions
+                  {
+                    // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                    Price = "price_1PPTq4FLUeB1O3RtnkGei6vE",
+                    Quantity = 1,
+                  },
+                },
+                    Mode = "payment",
+                    SuccessUrl = domain + "/success",
+                    CancelUrl = domain + "/cancel",
+                };
+                var service = new SessionService();
+                Session session = service.Create(options);
 
-                    return Results.Ok(new { paymentIntent.ClientSecret });
-                }
-                catch (StripeException e)
-                {
-                    return Results.BadRequest(new { error = new { message = e.StripeError.Message } });
-                }
+                context.Response.Headers.Add("Location", session.Url);
+                return new StatusCodeResult(303);
             });
         }
 

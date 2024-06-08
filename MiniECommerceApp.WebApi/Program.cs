@@ -15,6 +15,8 @@ using Stripe;
 using System.Security.Claims;
 var builder = WebApplication.CreateBuilder(args);
 
+
+StripeConfiguration.ApiKey = "rk_test_51NjQanFLUeB1O3Rt04rBvF2x6t7juO9NX3U7cy1g6cTRXcTPxqhj9wI3P8moHTSXQXnABu9Bc8K2L67vLlbYjzrX00q3amNz8U";
 builder.Configuration.AddUserSecrets<Program>().Build();
 builder.Services.IdentityConfiguration(builder.Configuration);
 builder.Services.SwaggerConfiguration();
