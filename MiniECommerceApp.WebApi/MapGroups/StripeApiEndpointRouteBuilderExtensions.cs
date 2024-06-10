@@ -39,17 +39,31 @@ namespace MiniECommerceApp.WebApi.MapGroups
                 if (stripeEvent.Type == Events.CheckoutSessionCompleted)
                 {
                     var session = stripeEvent.Data.Object as Session;
-                    var customerEmail = session.CustomerEmail;
+                    var customerEmail = session?.CustomerEmail;
 
-                    var messageSender = new Message(new string[] { customerEmail }, "Receipt", "<h1>Your payment was successful!</h1>", null);
-                    await emailSender.SendEmailAsync(messageSender);
+                    if (!string.IsNullOrEmpty(customerEmail))
+                    {
+                        var messageSender = new Message(new string[] { customerEmail }, "Receipt", "<h1>Your payment was successful!</h1>", null);
+                        await emailSender.SendEmailAsync(messageSender);
+                    }
+                    else
+                    {
+                        // Email adresi yok veya boş
+                        throw new InvalidOperationException("Customer email is null or empty.");
+                    }
                 }
 
                 return Results.Ok(); // HTTP 200 yanıtı
             }
             catch (StripeException e)
             {
-                return Results.BadRequest(); // HTTP 400 yanıtı
+                // Stripe özel hataları
+                return Results.BadRequest(new { error = "StripeException", message = e.Message });
+            }
+            catch (Exception e)
+            {
+                // Genel hatalar
+                return Results.BadRequest(new { error = "GeneralException", message = e.Message });
             }
         }
 
