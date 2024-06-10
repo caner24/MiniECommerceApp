@@ -32,7 +32,7 @@ namespace MiniECommerceApp.WebApi.MapGroups
                 var stripeEvent = EventUtility.ConstructEvent(
                     json,
                     context.Request.Headers["Stripe-Signature"],
-                    "whsec_AxtjthM3CIjxuKMUvCAjGBFBFiNq97Is"
+                    "whsec_4UHpywhAlA0kFgvJw7SqP1pDgFUstQzh"
                 );
 
                 // Ödeme başarılı olduğunda yapılacak işlemler
