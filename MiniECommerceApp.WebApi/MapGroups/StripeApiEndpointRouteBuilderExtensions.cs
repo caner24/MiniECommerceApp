@@ -24,7 +24,7 @@ namespace MiniECommerceApp.WebApi.MapGroups
         }
 
 
-        public static async Task<IResult> CreateStripeWebHook([FromServices] HttpContext context, [FromServices] IEmailSender emailSender)
+        public static async Task<IResult> CreateStripeWebHook(HttpContext context, [FromServices] IEmailSender emailSender)
         {
             var json = await new StreamReader(context.Request.Body).ReadToEndAsync();
             try
