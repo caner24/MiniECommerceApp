@@ -9,6 +9,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.StaticFiles;
 using MiniECommerceApp.Data.Concrete;
 using System.IO.Compression;
+using Stripe;
 
 namespace MiniECommerceApp.WebApi.MapGroups
 {
@@ -26,7 +27,7 @@ namespace MiniECommerceApp.WebApi.MapGroups
                 x.RequireRole("Admin");
             });
         }
-        private async static Task<IResult> AddProductPhotos(IProductDal productDal, IFormFileCollection formFileCollection, int productId)
+        private async static Task<IResult> AddProductPhotos(HttpContext httpContext,IProductDal productDal, IFormFileCollection formFileCollection, int productId)
         {
             var product = await productDal.Get(x => x.Id == productId).Include(x => x.ProductDetail).FirstOrDefaultAsync();
             if (product is not null)
@@ -36,16 +37,31 @@ namespace MiniECommerceApp.WebApi.MapGroups
                     Directory.CreateDirectory(folder);
 
                 product.ProductPhotos.Clear();
+
+                #region StripePhotosAdd
+                var productService = new Stripe.ProductService();
+                Stripe.Product stripeProduct = await productService.GetAsync(product.StripeProductId);
+                var productUpdateOptions = new ProductUpdateOptions
+                {
+                    Images = stripeProduct.Images = new List<string> { $"{httpContext.Request.Scheme}://{httpContext.Request.Host}{httpContext.Request.Path}{httpContext.Request.QueryString}Files/{formFileCollection.First().FileName}" },
+                    Name = stripeProduct.Name,
+                    Description = stripeProduct.Description
+                };
+                #endregion
+
                 foreach (var item in formFileCollection)
                 {
                     var path = Path.Combine(folder, item?.FileName);
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
                         await item.CopyToAsync(stream);
+
+
                         product.ProductPhotos.Add(new Entity.Photos { PhotosUrl = path.Replace("/app/Media", "Files") });
                     }
                 }
                 var response = await productDal.UpdateAsync(product);
+                await productService.UpdateAsync(product.StripeProductId, productUpdateOptions);
                 return Results.Ok(response);
             }
             return Results.BadRequest();
@@ -85,7 +101,7 @@ namespace MiniECommerceApp.WebApi.MapGroups
 
             if (product is not null)
             {
-                var photoUrls = product.ProductPhotos.Select(x => x.PhotosUrl.Replace("Files","Media")).ToList();
+                var photoUrls = product.ProductPhotos.Select(x => x.PhotosUrl.Replace("Files", "Media")).ToList();
                 var zipFileName = $"product_photos_{Guid.NewGuid()}.zip";
                 var zipFilePath = Path.Combine(Path.GetTempPath(), zipFileName);
                 if (System.IO.File.Exists(zipFilePath))

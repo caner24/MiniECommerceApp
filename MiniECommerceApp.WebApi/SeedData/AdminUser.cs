@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MiniECommerceApp.Data.Concrete;
 using MiniECommerceApp.Entity;
+using Stripe;
 
 namespace MiniECommerceApp.WebApi.SeedData
 {
@@ -12,7 +13,7 @@ namespace MiniECommerceApp.WebApi.SeedData
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var context = scope.ServiceProvider.GetRequiredService<MiniECommerceContext>();
-
+            var stripeClient = scope.ServiceProvider.GetRequiredService<StripeClient>();
             var adminRoleExists = await roleManager.RoleExistsAsync("Admin");
             if (!adminRoleExists)
             {
@@ -23,6 +24,14 @@ namespace MiniECommerceApp.WebApi.SeedData
             if (adminUser == null)
             {
                 var newUser = new User { UserName = app.Configuration["AdminUser:Email"], Email = app.Configuration["AdminUser:Email"] };
+                var options = new CustomerCreateOptions
+                {
+                    Email = newUser.Email,
+                    Name = newUser.UserName,
+                };
+                var service = new CustomerService(stripeClient);
+                var customer = await service.CreateAsync(options);
+                newUser.StripeUserId = customer.Id;
                 var result = await userManager.CreateAsync(newUser, app.Configuration["AdminUser:Password"]);
 
                 if (result.Succeeded)

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MiniECommerceApp.Data.Concrete;
 
@@ -11,9 +12,11 @@ using MiniECommerceApp.Data.Concrete;
 namespace MiniECommerceApp.WebApi.Migrations
 {
     [DbContext(typeof(MiniECommerceContext))]
-    partial class MiniECommerceContextModelSnapshot : ModelSnapshot
+    [Migration("20240609150840_stripe_id_added")]
+    partial class stripe_id_added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -377,9 +380,6 @@ namespace MiniECommerceApp.WebApi.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("StripeUserId")
                         .HasColumnType("longtext");
 
                     b.Property<bool>("TwoFactorEnabled")

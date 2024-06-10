@@ -13,5 +13,7 @@ namespace MiniECommerceApp.Entity
         public Basket Basket { get; set; }
         public List<Invoice> Invoices { get; set; }
         public List<Comment> Comments { get; set; }
+        public string? StripeUserId { get; set; }
+
     }
 }

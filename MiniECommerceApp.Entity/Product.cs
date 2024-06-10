@@ -18,6 +18,7 @@ namespace MiniECommerceApp.Entity
         }
         public int Id { get; set; }
         public string ProductName { get; set; }
+        public string StripeProductId { get; set; }
         public double ProductPrice { get; set; }
         public int Amount { get; set; }
         public byte[] ConcurrencyToken { get; set; }
