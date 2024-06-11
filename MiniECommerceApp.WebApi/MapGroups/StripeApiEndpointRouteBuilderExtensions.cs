@@ -20,7 +20,7 @@ namespace MiniECommerceApp.WebApi.MapGroups
         {
             endpointRouteBuilder.MapPost("/create-stripe-user", CreateStripeUser);
             endpointRouteBuilder.MapPost("/stripe-web-hook", CreateStripeWebHook);
-            endpointRouteBuilder.MapPost("/create-checkout-session", CreateCheckoutSession).RequireAuthorization();
+            endpointRouteBuilder.MapPost("/create-checkout-session", CreateCheckoutSession);
         }
 
 
