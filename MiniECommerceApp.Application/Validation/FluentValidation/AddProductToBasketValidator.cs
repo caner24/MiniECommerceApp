@@ -12,8 +12,8 @@ namespace MiniECommerceApp.Application.Validation.FluentValidation
     {
         public AddProductToBasketValidator()
         {
-            RuleFor(x => x.UserId).NotEmpty().NotNull().WithMessage($"{nameof(AddProductToBasketDto.UserId)} alani boş bırakilamaz !.");
             RuleFor(x => x.ProdId).NotEmpty().NotNull().WithMessage($"{nameof(AddProductToBasketDto.ProdId)} alani boş bırakilamaz !.");
+                        RuleFor(x => x.Amount).NotEmpty().NotNull().WithMessage($"{nameof(AddProductToBasketDto.Amount)} alani boş bırakilamaz !.");
         }
     }
 }

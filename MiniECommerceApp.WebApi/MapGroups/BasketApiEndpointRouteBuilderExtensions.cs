@@ -17,8 +17,8 @@ namespace MiniECommerceApp.WebApi.MapGroups
         public static void MapBasketApi(this IEndpointRouteBuilder endpoints)
         {
             endpoints.MapPost("/addProductToBasket", AddProductToBasket);
-            endpoints.MapPost("/updateUserBasket", UpdateUserBasket);
-            endpoints.MapGet("/getUserBasket/{id}", GetUserBasket);
+            endpoints.MapPut("/updateUserBasket", UpdateUserBasket);
+            endpoints.MapGet("/getUserBasket", GetUserBasket);
         }
         private static async Task<IResult> AddProductToBasket([FromServices] IValidator<AddProductToBasketCommandRequest> validator, [FromServices] IMediator mediator, [FromBody] AddProductToBasketCommandRequest addProductToBasketDto)
         {
@@ -28,9 +28,9 @@ namespace MiniECommerceApp.WebApi.MapGroups
             var response = await mediator.Send(addProductToBasketDto);
             return Results.Ok(response);
         }
-        private static async Task<IResult> GetUserBasket([FromServices] IMediator mediator, [FromRoute] string id)
+        private static async Task<IResult> GetUserBasket([FromServices] IMediator mediator)
         {
-            var response = await mediator.Send(new GetUserBasketQueryRequest { UserId = id });
+            var response = await mediator.Send(new GetUserBasketQueryRequest { });
             return Results.Ok(response);
         }
         private static async Task<IResult> UpdateUserBasket([FromServices] IMediator mediator, UpdateProductToBasketRequest updateProductToBasketDto)

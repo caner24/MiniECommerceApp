@@ -9,8 +9,6 @@ namespace MiniECommerceApp.Entity.DTOs
 {
     public record AddProductToBasketDto
     {
-        public string UserId { get; init; }
-
         public int ProdId { get; init; }
 
         public int Amount { get; init; }

@@ -10,7 +10,6 @@ namespace MiniECommerceApp.Application.MiniECommerce.Commands.Request
 {
     public record UpdateProductToBasketRequest : IRequest<UpdateProductToBasketResponse>
     {
-        public string UserId { get; init; }
         public List<int> ProdId { get; init; }
     }
 }

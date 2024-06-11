@@ -74,8 +74,7 @@ namespace MiniECommerceApp.WebApi.MapGroups
         }
         private static async Task<StatusCodeResult> CreateCheckoutSession(ClaimsPrincipal claims, [FromBody] Dictionary<string, int> productPriceAndAmount, HttpContext context, [FromServices] MiniECommerceContext dbContext, [FromServices] IConfiguration configuration)
         {
-            var userId = claims.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
-            var user = await dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
+
             var domain = "https://www.caneraycelep.social";
             var options = new SessionCreateOptions
             {
@@ -85,12 +84,17 @@ namespace MiniECommerceApp.WebApi.MapGroups
                 Mode = "payment",
                 SuccessUrl = domain + "/success",
                 CancelUrl = domain + "/cancel",
-                Metadata = new Dictionary<string, string>
-        {
-            { "user_id", user.StripeUserId }
-        },
-                CustomerEmail = user.Email,
             };
+            var userId = claims.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
+            if (userId is not null)
+            {
+                var user = await dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
+                options.Metadata = new Dictionary<string, string>
+                {
+                    { "user_id", user.Id },
+                };
+                options.CustomerEmail = user.Email;
+            }
             foreach (var item in productPriceAndAmount)
             {
                 options.LineItems.Add(new SessionLineItemOptions
@@ -99,7 +103,6 @@ namespace MiniECommerceApp.WebApi.MapGroups
                     Quantity = item.Value,
                 });
             }
-
             var service = new SessionService();
             Session session = service.Create(options);
 

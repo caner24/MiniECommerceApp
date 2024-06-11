@@ -10,6 +10,5 @@ namespace MiniECommerceApp.Application.MiniECommerce.Queries.Request
 {
     public record GetUserBasketQueryRequest:IRequest<GetUserBasketQueryResponse>
     {
-        public string UserId { get; set; }
     }
 }
