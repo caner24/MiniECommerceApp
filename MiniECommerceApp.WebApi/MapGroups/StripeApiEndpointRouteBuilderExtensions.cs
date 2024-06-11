@@ -85,7 +85,7 @@ namespace MiniECommerceApp.WebApi.MapGroups
                 SuccessUrl = domain + "/success",
                 CancelUrl = domain + "/cancel",
             };
-            var userId = claims.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
+            var userId = claims.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
             if (userId is not null)
             {
                 var user = await dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
