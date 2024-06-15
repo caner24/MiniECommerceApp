@@ -9,7 +9,6 @@ namespace MiniECommerceApp.Entity.DTOs
 {
     public record AddCommentsToProductDto
     {
-        public string UserId { get; init; }
         public int ProductId { get; init; }
         public string CommentText { get; init; }
     }

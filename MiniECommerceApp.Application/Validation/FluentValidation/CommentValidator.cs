@@ -15,7 +15,6 @@ namespace MiniECommerceApp.Application.Validation.FluentValidation
         {
             RuleFor(x => x.CommentText).NotEmpty().NotNull().WithMessage("Mesaj içeriği boş bırakılamaz !.");
             RuleFor(x => x.ProductId).NotEmpty().NotNull().WithMessage("Ürün ıd boş bırakılamaz !.");
-            RuleFor(x => x.UserId).NotEmpty().NotNull().WithMessage("User ıd boş bırakılamaz !.");
         }
     }
 }

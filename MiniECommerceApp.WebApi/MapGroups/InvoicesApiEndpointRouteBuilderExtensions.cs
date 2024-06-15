@@ -14,6 +14,9 @@ using MiniECommerceApp.Entity.DTOs;
 using FluentValidation.Results;
 using MiniECommerceApp.Data.Abstract;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using MiniECommerceApp.Data.Concrete;
+using Stripe;
 
 namespace MiniECommerceApp.WebApi.MapGroups
 {
@@ -21,23 +24,22 @@ namespace MiniECommerceApp.WebApi.MapGroups
     {
         public static void MapInvoicesApi(this IEndpointRouteBuilder endpoints)
         {
-            endpoints.MapPost("/createInvoices", CreateInvoices);
-            endpoints.MapGet("/getInvoices/{id}", GetInvoices);
+            endpoints.MapGet("/getInvoices/", GetInvoices);
         }
 
-        private static async Task<IResult> CreateInvoices([FromServices] IValidator<CreateInvoiceDto> validator, [FromServices] IMediator mediator, [FromBody] CreateInvoiceCommandRequest createInvoicesCommandRequest)
+        private static async Task<IResult> GetInvoices(ClaimsPrincipal claimPrincipal,[FromServices]MiniECommerceContext context,  [FromServices] IInvoicesDal invoicesDal)
         {
-            ValidationResult validationResult = await validator.ValidateAsync(createInvoicesCommandRequest);
-            if (!validationResult.IsValid)
-                return Results.ValidationProblem(validationResult.ToDictionary());
-            var response = await mediator.Send(createInvoicesCommandRequest);
-            return Results.Ok(response);
-        }
+            var userId = claimPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+            var user=context.Users.FirstOrDefault(x => x.Id == userId);
+            var options = new ChargeListOptions
+            {
+                Customer = user.StripeUserId,
+                Limit = 100 // İhtiyacınıza göre limit ayarlayın
+            };
 
-        private static async Task<IResult> GetInvoices([FromRoute] string id, [FromServices] IInvoicesDal invoicesDal)
-        {
-            var invoices = invoicesDal.GetAll(x => x.UserId == id).ToListAsync();
-            return Results.Ok(invoices);
+            var service = new ChargeService();
+            var charges = await service.ListAsync(options);
+            return Results.Ok(charges.Data);
         }
 
     }
