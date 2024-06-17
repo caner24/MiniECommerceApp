@@ -25,6 +25,7 @@
     <li><strong>DigitalOcean</strong>: Cloud provider used for hosting the project.</li>
     <li><strong>AutoMapper</strong>: For mapping.</li>
     <li><strong>ML.NET</strong>: For offensive product comments detect using ml.net model</li>
+    <li><strong>Caprover</strong>: For CI/CD</li>
 </ul>
 
 ## Installation
@@ -35,7 +36,7 @@
     </li>
     <li><strong>Use the Project</strong>
         <ul>
-            <li>http://159.223.26.58:8080/swagger/index.html</li>
+            <li>https://miniecommerceapi.caprover.caneraycelep.social/swagger/index.html</li>
         </ul>
     </li>
 </ol>
