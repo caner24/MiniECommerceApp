@@ -30,7 +30,7 @@ namespace MiniECommerceApp.Data.Concrete
             }
             else
             {
-                factory.Uri = new Uri(_config["rabbitmq:defaultConnection"].ToString());
+                factory.Uri = new Uri(_config["rabbitmq"].ToString());
             }
             using var connection = factory.CreateConnection();
             using var channel = connection.CreateModel();

@@ -112,7 +112,7 @@ namespace MiniECommerceApp.WebApi.Extensions
                     {
                         options.Configuration = hostEnvironment.IsDevelopment()
       ? "redis"
-      : configuration["Redis:DefaultConnection"];
+      : configuration["Redis"];
                     });
 
 
@@ -123,7 +123,7 @@ namespace MiniECommerceApp.WebApi.Extensions
 
         public static void IdentityConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration["ConnectionStrings:defaultConnection"];
+            var connectionString = configuration["ConnectionStrings"];
             ServerVersion serverVersion = ServerVersion.AutoDetect(connectionString);
             services.AddDbContext<MiniECommerceContext>(options => options.UseMySql(connectionString, serverVersion, b => b.MigrationsAssembly("MiniECommerceApp.WebApi")));
             services.AddIdentityApiEndpoints<User>(options =>
@@ -166,13 +166,13 @@ namespace MiniECommerceApp.WebApi.Extensions
                 Version = "0.1.0",
             };
 
-            StripeConfiguration.ApiKey = config["Stripe:STRIPE_SECRET_KEY"];
+            StripeConfiguration.ApiKey = config["STRIPE_SECRET_KEY"];
 
             services.Configure<StripeOptions>(options =>
             {
-                options.PublishableKey = config["Stripe:STRIPE_PUBLISHABLE_KEY"];
-                options.SecretKey = config["Stripe:STRIPE_SECRET_KEY"];
-                options.WebhookSecret = config["Stripe:STRIPE_WEBHOOK_SECRET"];
+                options.PublishableKey = config["STRIPE_PUBLISHABLE_KEY"];
+                options.SecretKey = config["STRIPE_SECRET_KEY"];
+                options.WebhookSecret = config["STRIPE_WEBHOOK_SECRET"];
             });
         }
     }

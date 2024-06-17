@@ -35,7 +35,7 @@ namespace MiniECommerceApp.WebApi.TaskScheduler
             }
             else
             {
-                factory.Uri = new Uri(_config["rabbitmq:defaultConnection"].ToString());
+                factory.Uri = new Uri(_config["rabbitmq"].ToString());
             }
             var connection = factory.CreateConnection();
             _channel = connection.CreateModel();
