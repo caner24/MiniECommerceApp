@@ -7,6 +7,14 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
+ENV Redis=${Redis}
+ENV rabbitmq=${rabbitmq}
+ENV ConnectionStrings=${ConnectionStrings}
+ENV STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+ENV STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY}
+ENV STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+
+
 COPY --chown=app ["MiniECommerceApp.WebApi/Media", "/app/Media"]
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
